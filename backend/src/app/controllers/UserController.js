@@ -1,7 +1,21 @@
+import * as Yup from "yup";
+
 import User from "../models/User";
 
 class UserController {
   async store(req, res) {
+    const schema = Yup.object.shape({
+      name: Yup.string().isRequired(),
+      email: Yup.email().isRequired(),
+      password: Yup.string()
+        .isRequired()
+        .min(6),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: "Invalid inserted data!" });
+    }
+
     const { email } = req.body;
 
     const userExists = await User.findOne({
