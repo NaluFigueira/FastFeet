@@ -1,12 +1,13 @@
 import * as Yup from "yup";
 
-import Recipient from "../models/Recipient";
+import File from "../models/File";
+import Deliveryman from "../models/Deliveryman";
 
-class RecipientController {
+class DeliverymanController {
   async index(req, res) {
-    const recipients = await Recipient.findAll();
+    const deliverymen = await Deliveryman.findAll();
 
-    return res.json(recipients);
+    return res.json(deliverymen);
   }
 
   async show(req, res) {
@@ -18,45 +19,47 @@ class RecipientController {
       return res.status(400).json({ error: "Id is required!" });
     }
 
-    const recipient = await Recipient.findByPk(req.params.id);
+    const deliveryman = await Deliveryman.findByPk(req.params.id);
 
-    if (!recipient) {
+    if (!deliveryman) {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    return res.json(recipient);
+    return res.json(deliveryman);
   }
 
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
-      street: Yup.string().required(),
-      number: Yup.string().required(),
-      additional_address: Yup.string(),
-      state: Yup.string().required(),
-      city: Yup.string().required(),
-      zip_code: Yup.string().required(),
+      email: Yup.string().required(),
+      avatar_id: Yup.number(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: "Invalid inserted data!" });
     }
 
-    const recipient = await Recipient.create(req.body);
+    const { avatar_id } = req.body;
 
-    return res.json(recipient);
+    if (avatar_id) {
+      const file = await File.findByPk(avatar_id);
+
+      if (!file) {
+        return res.status(400).json({ error: "Invalid file id!" });
+      }
+    }
+
+    const deliveryman = await Deliveryman.create(req.body);
+
+    return res.json(deliveryman);
   }
 
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number().required(),
       name: Yup.string(),
-      street: Yup.string(),
-      number: Yup.string(),
-      additional_address: Yup.string(),
-      state: Yup.string(),
-      city: Yup.string(),
-      zip_code: Yup.string(),
+      email: Yup.string(),
+      avatar_id: Yup.number(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -65,15 +68,25 @@ class RecipientController {
 
     const { id } = req.body;
 
-    const recipient = await Recipient.findByPk(id);
+    const deliveryman = await Deliveryman.findByPk(id);
 
-    if (!recipient) {
+    if (!deliveryman) {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    await recipient.update(req.body);
+    const { avatar_id } = req.body;
 
-    return res.json(recipient);
+    if (avatar_id) {
+      const file = await File.findByPk(avatar_id);
+
+      if (!file) {
+        return res.status(400).json({ error: "Invalid file id!" });
+      }
+    }
+
+    await deliveryman.update(req.body);
+
+    return res.json(deliveryman);
   }
 
   async delete(req, res) {
@@ -87,18 +100,18 @@ class RecipientController {
 
     const { id } = req.params;
 
-    const recipient = await Recipient.findByPk(id);
+    const deliveryman = await Deliveryman.findByPk(id);
 
-    if (!recipient) {
+    if (!deliveryman) {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    await Recipient.destroy({
+    await Deliveryman.destroy({
       where: { id },
     });
 
-    return res.json({ msg: "Recipient deleted!" });
+    return res.json({ msg: "Delivery man was deleted!" });
   }
 }
 
-export default new RecipientController();
+export default new DeliverymanController();
