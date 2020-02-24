@@ -9,6 +9,16 @@ class DeliverymanController {
   async index(req, res) {
     const { name } = req.query;
 
+    const querySchema = Yup.object().shape({
+      name: Yup.string(),
+    });
+
+    if (!(await querySchema.isValid(req.body))) {
+      return res
+        .status(400)
+        .json({ error: "Deliveryman name must be a string!" });
+    }
+
     const deliverymen = await Deliveryman.findAll({
       where: {
         name: { [Op.iLike]: name ? `${name}%` : `%%` },
