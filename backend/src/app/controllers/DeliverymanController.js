@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 
-import File from "../models/File";
 import Deliveryman from "../models/Deliveryman";
 
 class DeliverymanController {
@@ -39,16 +38,6 @@ class DeliverymanController {
       return res.status(400).json({ error: "Invalid inserted data!" });
     }
 
-    const { avatar_id } = req.body;
-
-    if (avatar_id) {
-      const file = await File.findByPk(avatar_id);
-
-      if (!file) {
-        return res.status(400).json({ error: "Invalid file id!" });
-      }
-    }
-
     const deliveryman = await Deliveryman.create(req.body);
 
     return res.json(deliveryman);
@@ -74,16 +63,6 @@ class DeliverymanController {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    const { avatar_id } = req.body;
-
-    if (avatar_id) {
-      const file = await File.findByPk(avatar_id);
-
-      if (!file) {
-        return res.status(400).json({ error: "Invalid file id!" });
-      }
-    }
-
     await deliveryman.update(req.body);
 
     return res.json(deliveryman);
@@ -106,9 +85,7 @@ class DeliverymanController {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    await Deliveryman.destroy({
-      where: { id },
-    });
+    await deliveryman.destroy();
 
     return res.json({ msg: "Delivery man was deleted!" });
   }

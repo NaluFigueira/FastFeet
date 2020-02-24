@@ -1,12 +1,12 @@
 import * as Yup from "yup";
 
-import Recipient from "../models/Recipient";
+import Order from "../models/Order";
 
-class RecipientController {
+class DeliverymanController {
   async index(req, res) {
-    const recipients = await Recipient.findAll();
+    const orders = await Order.findAll();
 
-    return res.json(recipients);
+    return res.json(orders);
   }
 
   async show(req, res) {
@@ -18,45 +18,37 @@ class RecipientController {
       return res.status(400).json({ error: "Id is required!" });
     }
 
-    const recipient = await Recipient.findByPk(req.params.id);
+    const order = await Order.findByPk(req.params.id);
 
-    if (!recipient) {
+    if (!order) {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    return res.json(recipient);
+    return res.json(order);
   }
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      street: Yup.string().required(),
-      number: Yup.string().required(),
-      additional_address: Yup.string(),
-      state: Yup.string().required(),
-      city: Yup.string().required(),
-      zip_code: Yup.string().required(),
+      recipient_id: Yup.number().required(),
+      deliveryman_id: Yup.number().required(),
+      product: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: "Invalid inserted data!" });
     }
 
-    const recipient = await Recipient.create(req.body);
+    const order = await Order.create(req.body);
 
-    return res.json(recipient);
+    return res.json(order);
   }
 
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number().required(),
-      name: Yup.string(),
-      street: Yup.string(),
-      number: Yup.string(),
-      additional_address: Yup.string(),
-      state: Yup.string(),
-      city: Yup.string(),
-      zip_code: Yup.string(),
+      recipient_id: Yup.number(),
+      deliveryman_id: Yup.number(),
+      product: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -65,15 +57,15 @@ class RecipientController {
 
     const { id } = req.body;
 
-    const recipient = await Recipient.findByPk(id);
+    const order = await Order.findByPk(id);
 
-    if (!recipient) {
+    if (!order) {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    await recipient.update(req.body);
+    await order.update(req.body);
 
-    return res.json(recipient);
+    return res.json(order);
   }
 
   async delete(req, res) {
@@ -87,16 +79,16 @@ class RecipientController {
 
     const { id } = req.params;
 
-    const recipient = await Recipient.findByPk(id);
+    const order = await Order.findByPk(id);
 
-    if (!recipient) {
+    if (!order) {
       return res.status(400).json({ error: "Invalid id!" });
     }
 
-    await recipient.destroy();
+    await order.destroy();
 
-    return res.json({ msg: "Recipient deleted!" });
+    return res.json({ msg: "Order was deleted!" });
   }
 }
 
-export default new RecipientController();
+export default new DeliverymanController();
