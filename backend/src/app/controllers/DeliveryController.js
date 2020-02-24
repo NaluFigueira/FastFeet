@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { isAfter, isBefore, isToday } from "date-fns";
+import { isAfter, isBefore, startOfDay, endOfDay } from "date-fns";
 
 import { Op } from "sequelize";
 
@@ -60,14 +60,18 @@ class DeliveryController {
       });
 
     const deliverymanOrders = await Order.findAll({
-      where: { deliveryman_id },
+      where: {
+        deliveryman_id,
+        start_date: {
+          [Op.between]: [
+            startOfDay(req.currentDate),
+            endOfDay(req.currentDate),
+          ],
+        },
+      },
     });
 
-    const currentDayOrders = deliverymanOrders.filter(delivery_order =>
-      delivery_order.start_date ? isToday(delivery_order.start_date) : false
-    );
-
-    if (currentDayOrders.length === 5)
+    if (deliverymanOrders.length === 5)
       return res.status(401).json({
         error: "You already have started 5 orders today, try tomorrow!",
       });
