@@ -1,62 +1,119 @@
 import * as Yup from "yup";
+import { isAfter, isBefore, isToday } from "date-fns";
 
 import { Op } from "sequelize";
 
 import Order from "../models/Order";
-import File from "../models/File";
-import Recipient from "../models/Recipient";
 
 class DeliveryController {
-  async index(req, res) {
-    const paramsSchema = Yup.object().shape({
-      id: Yup.number().required(),
+  async store(req, res) {
+    /**
+     * Validando dados iniciais
+     */
+    const schema = Yup.object().shape({
+      order_id: Yup.number().required(),
+      deliveryman_id: Yup.number().required(),
     });
 
-    const querySchema = Yup.object().shape({
-      delivered: Yup.boolean(),
-    });
-
-    if (!(await paramsSchema.isValid(req.body))) {
-      return res.status(400).json({ error: "Deliveryman id is required!" });
+    if (!(await schema.isValid(req.body))) {
+      return res
+        .status(400)
+        .json({ error: "Order and deliveryman ids are required!" });
     }
 
-    if (!(await querySchema.isValid(req.body))) {
-      return res.status(400).json({ error: "Delivered must be a boolean!" });
-    }
+    /**
+     * Verificando se a encomenda é uma encomenda válida
+     */
 
-    const { id } = req.params;
-    const { delivered } = req.query;
+    const { order_id, deliveryman_id } = req.body;
 
-    const orders = await Order.findAll({
+    const order = await Order.findOne({
       where: {
-        deliveryman_id: id,
+        id: order_id,
+        deliveryman_id,
+        start_date: null,
+        end_date: null,
         canceled_at: null,
-        end_date: delivered ? { [Op.ne]: null } : null,
       },
-      attributes: ["id", "product", "start_date", "end_date"],
-      include: [
-        {
-          model: File,
-          as: "signature",
-          attributes: ["url", "path"],
-        },
-        {
-          model: Recipient,
-          as: "recipient",
-          attributes: [
-            "name",
-            "street",
-            "number",
-            "additional_address",
-            "state",
-            "city",
-            "zip_code",
-          ],
-        },
-      ],
     });
 
-    return res.json(orders);
+    if (!order) {
+      return res.status(401).json({
+        error:
+          "The order was not found or it's been canceled, started or ended!",
+      });
+    }
+
+    /**
+     * Verificando se o horário atual é válido para retirada,
+     * e se o entregador pode relizar mais uma retirada
+     */
+
+    const currentDate = new Date(req.currentDate);
+
+    const minDate = currentDate.setHours(8, 0, 0);
+    const maxDate = currentDate.setHours(18, 0, 0);
+
+    if (isBefore(req.currentDate, minDate) || isAfter(req.currentDate, maxDate))
+      return res.status(401).json({
+        error: "Order withdraw is only allowed between 8am and 8pm!",
+      });
+
+    const deliverymanOrders = await Order.findAll({
+      where: { deliveryman_id },
+    });
+
+    const currentDayOrders = deliverymanOrders.filter(delivery_order =>
+      delivery_order.start_date ? isToday(delivery_order.start_date) : false
+    );
+
+    if (currentDayOrders.length === 5)
+      return res.status(401).json({
+        error: "You already have started 5 orders today, try tomorrow!",
+      });
+
+    /**
+     * Iniciando a entrega da encomenda
+     */
+
+    await order.update({ start_date: req.currentDate });
+
+    return res.json({ msg: "Order started!" });
+  }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      order_id: Yup.number().required(),
+      signature_id: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res
+        .status(400)
+        .json({ error: "Order id and signature id are required!" });
+    }
+
+    const { order_id, signature_id } = req.body;
+
+    const order = await Order.findOne({
+      where: {
+        id: order_id,
+        start_date: { [Op.ne]: null },
+        end_date: null,
+        canceled_at: null,
+      },
+    });
+
+    if (!order) {
+      return res.status(401).json({
+        error:
+          "This order is either canceled or ended, haven't started, or does not exist!",
+      });
+    }
+
+    await order.update({ signature_id, end_date: req.currentDate });
+
+    return res.json({ msg: "Order delivered!" });
   }
 }
 

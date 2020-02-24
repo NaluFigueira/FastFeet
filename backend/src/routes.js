@@ -9,13 +9,15 @@ import RecipientController from "./app/controllers/RecipientController";
 import FileController from "./app/controllers/FileController";
 import DeliverymanController from "./app/controllers/DeliverymanController";
 import OrderController from "./app/controllers/OrderController";
+import DeliverymanDeliveriresController from "./app/controllers/DeliverymanDeliveriesController";
 import DeliveryController from "./app/controllers/DeliveryController";
 
 import authMiddleware from "./app/middlewares/auth";
 import verifyAvatarIdMiddleware from "./app/middlewares/verifyAvatarId";
 import verifyDeliverymanIdMiddleware from "./app/middlewares/verifyDeliverymanId";
 import verifyRecipientIdMiddleware from "./app/middlewares/verifyRecipientId";
-// import verifySignatureIdMiddleware from "./app/middlewares/verifySignatureId";
+import verifySignatureIdMiddleware from "./app/middlewares/verifySignatureId";
+import getCurrentDateMiddleware from "./app/middlewares/getCurrentDate";
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -23,7 +25,21 @@ const upload = multer(multerConfig);
 routes.post("/users", UserController.store);
 routes.post("/sessions", SessionController.store);
 
-routes.get("/deliveryman/:id/deliveries", DeliveryController.index);
+routes.get(
+  "/deliveryman/:id/deliveries",
+  DeliverymanDeliveriresController.index
+);
+
+routes.post(
+  "/delivery_start",
+  getCurrentDateMiddleware,
+  DeliveryController.store
+);
+routes.put(
+  "/delivery_end",
+  [verifySignatureIdMiddleware, getCurrentDateMiddleware],
+  DeliveryController.update
+);
 
 routes.use(authMiddleware);
 
