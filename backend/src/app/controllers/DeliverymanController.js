@@ -1,30 +1,29 @@
 import * as Yup from "yup";
 
+import { Op } from "sequelize";
+
 import Deliveryman from "../models/Deliveryman";
+import File from "../models/File";
 
 class DeliverymanController {
   async index(req, res) {
-    const deliverymen = await Deliveryman.findAll();
+    const { name } = req.query;
 
-    return res.json(deliverymen);
-  }
-
-  async show(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required(),
+    const deliverymen = await Deliveryman.findAll({
+      where: {
+        name: { [Op.iLike]: name ? `${name}%` : `%%` },
+      },
+      attributes: ["id", "name", "email"],
+      include: [
+        {
+          model: File,
+          as: "avatar",
+          attributes: ["path", "url"],
+        },
+      ],
     });
 
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: "Id is required!" });
-    }
-
-    const deliveryman = await Deliveryman.findByPk(req.params.id);
-
-    if (!deliveryman) {
-      return res.status(400).json({ error: "Invalid id!" });
-    }
-
-    return res.json(deliveryman);
+    return res.json(deliverymen);
   }
 
   async store(req, res) {

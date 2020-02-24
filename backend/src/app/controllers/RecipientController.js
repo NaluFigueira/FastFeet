@@ -1,30 +1,30 @@
 import * as Yup from "yup";
 
+import { Op } from "sequelize";
+
 import Recipient from "../models/Recipient";
 
 class RecipientController {
   async index(req, res) {
-    const recipients = await Recipient.findAll();
+    const { name } = req.query;
 
-    return res.json(recipients);
-  }
-
-  async show(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required(),
+    const recipients = await Recipient.findAll({
+      where: {
+        name: { [Op.iLike]: name ? `${name}%` : `%%` },
+      },
+      attributes: [
+        "id",
+        "name",
+        "street",
+        "number",
+        "additional_address",
+        "state",
+        "city",
+        "zip_code",
+      ],
     });
 
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: "Id is required!" });
-    }
-
-    const recipient = await Recipient.findByPk(req.params.id);
-
-    if (!recipient) {
-      return res.status(400).json({ error: "Invalid id!" });
-    }
-
-    return res.json(recipient);
+    return res.json(recipients);
   }
 
   async store(req, res) {

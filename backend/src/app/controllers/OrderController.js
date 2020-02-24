@@ -1,30 +1,49 @@
 import * as Yup from "yup";
 
+import { Op } from "sequelize";
+
 import Order from "../models/Order";
+import File from "../models/File";
+import Recipient from "../models/Recipient";
+import Deliveryman from "../models/Deliveryman";
 
 class DeliverymanController {
   async index(req, res) {
-    const orders = await Order.findAll();
+    const { product } = req.query;
 
-    return res.json(orders);
-  }
-
-  async show(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required(),
+    const orders = await Order.findAll({
+      where: {
+        product: { [Op.iLike]: product ? `${product}%` : `%%` },
+      },
+      attributes: ["id", "product", "canceled_at", "start_date", "end_date"],
+      include: [
+        {
+          model: File,
+          as: "signature",
+          attributes: ["url", "path"],
+        },
+        {
+          model: Deliveryman,
+          as: "deliveryman",
+          attributes: ["name"],
+        },
+        {
+          model: Recipient,
+          as: "recipient",
+          attributes: [
+            "name",
+            "street",
+            "number",
+            "additional_address",
+            "state",
+            "city",
+            "zip_code",
+          ],
+        },
+      ],
     });
 
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: "Id is required!" });
-    }
-
-    const order = await Order.findByPk(req.params.id);
-
-    if (!order) {
-      return res.status(400).json({ error: "Invalid id!" });
-    }
-
-    return res.json(order);
+    return res.json(orders);
   }
 
   async store(req, res) {
