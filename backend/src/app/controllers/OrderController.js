@@ -6,6 +6,7 @@ import Order from "../models/Order";
 import File from "../models/File";
 import Recipient from "../models/Recipient";
 import Deliveryman from "../models/Deliveryman";
+import Mail from "../../lib/Mail";
 
 class DeliverymanController {
   async index(req, res) {
@@ -66,6 +67,25 @@ class DeliverymanController {
     }
 
     const order = await Order.create(req.body);
+
+    const { deliveryman, recipient } = req;
+
+    await Mail.sendMail({
+      to: `${deliveryman.name} <${deliveryman.email}>`,
+      subject: "Encomenda pronta para ser retirada",
+      template: "orderCreated",
+      context: {
+        deliveryman_name: deliveryman.name,
+        product_name: req.body.product,
+        recipient_name: recipient.name,
+        street: recipient.street,
+        number: recipient.number,
+        additional_address: recipient.additional_address,
+        city: recipient.city,
+        state: recipient.state,
+        zip_code: recipient.zip_code,
+      },
+    });
 
     return res.json(order);
   }

@@ -1,0 +1,24 @@
+<div style="width: 60%">
+<h2>Olá, {{deliveryman_name}}</h2>
+<p>Uma encomenda que deve ser entregue por você, já está pronta para ser retirada.
+  Confira os detalhes abaixo:
+</p>
+  <div style="width: 100%;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;">
+    <div style = "margin-right: 50px;">
+      <strong>Nome do destinatário: </strong> {{recipient_name}} <br />
+      <strong>Nome do Produto: </strong> {{product_name}} <br />
+    </div>
+    <div style = "display: flex; flex-direction:column;">
+      <strong>Endereço: </strong>
+      <div style = "display: flex; flex-direction:column;">
+        <span>{{street}},{{number}}</span>
+        <span>{{additional_address}}</span>
+        <span>{{city}} - {{state}}</span>
+        <span>{{zip_code}}</span>
+      </div>
+    </div>
+  </div>
+</div>

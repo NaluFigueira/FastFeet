@@ -9,6 +9,8 @@ export default async (req, res, next) => {
     if (!deliveryman) {
       return res.status(400).json({ error: "Invalid delivery-man id!" });
     }
+
+    req.deliveryman = deliveryman;
   }
 
   return next();

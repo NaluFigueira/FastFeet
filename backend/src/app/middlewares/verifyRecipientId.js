@@ -9,6 +9,8 @@ export default async (req, res, next) => {
     if (!recipient) {
       return res.status(400).json({ error: "Invalid recipient id!" });
     }
+
+    req.recipient = recipient;
   }
 
   return next();
