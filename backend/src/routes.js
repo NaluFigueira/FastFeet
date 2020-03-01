@@ -11,6 +11,7 @@ import DeliverymanController from "./app/controllers/DeliverymanController";
 import OrderController from "./app/controllers/OrderController";
 import DeliverymanDeliveriresController from "./app/controllers/DeliverymanDeliveriesController";
 import DeliveryController from "./app/controllers/DeliveryController";
+import DeliveryProblemController from "./app/controllers/DeliveryProblemController";
 
 import authMiddleware from "./app/middlewares/auth";
 import verifyAvatarIdMiddleware from "./app/middlewares/verifyAvatarId";
@@ -40,6 +41,8 @@ routes.put(
   [verifySignatureIdMiddleware, getCurrentDateMiddleware],
   DeliveryController.update
 );
+
+routes.post("/problem", DeliveryProblemController.store);
 
 routes.use(authMiddleware);
 
@@ -75,5 +78,13 @@ routes.put(
   OrderController.update
 );
 routes.delete("/orders/:id", OrderController.delete);
+
+routes.get("/problems", DeliveryProblemController.index);
+routes.get("/delivery/:id/problems", DeliveryProblemController.show);
+routes.put(
+  "/problem/:id/cancel-delivery",
+  getCurrentDateMiddleware,
+  DeliveryProblemController.update
+);
 
 export default routes;
