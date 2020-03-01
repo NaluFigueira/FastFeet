@@ -10,7 +10,8 @@
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0"
+    "react-scripts": "3.4.0",
+    "reactotron-react-js": "^3.3.7"
   },
   "scripts": {
     "start": "react-app-rewired start",
