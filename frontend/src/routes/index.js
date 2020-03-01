@@ -1,5 +1,7 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
+
+import Route from './Route';
 
 import SignIn from '../pages/SignIn';
 
@@ -14,24 +16,36 @@ import RecipientForm from '../pages/RecipientForm';
 
 import DeliveryProblems from '../pages/DeliveryProblems';
 
-export default function Routes(){
-  return(
+export default function Routes() {
+  return (
     <Switch>
       <Route path="/" exact component={SignIn} />
 
-      <Route path="/deliveries" component={DeliveriesList} />
-      <Route path="/delivery/register" component={DeliveryForm} />
-      <Route path="/delivery/edit" render={() => <DeliveryForm edit={true} />} />
+      <Route path="/deliveries" component={DeliveriesList} isPrivate />
+      <Route path="/delivery/register" component={DeliveryForm} isPrivate />
+      <Route
+        path="/delivery/edit"
+        render={() => <DeliveryForm edit />}
+        isPrivate
+      />
 
       <Route path="/deliverymen" component={DeliverymenList} />
       <Route path="/deliveryman/register" component={DeliverymanForm} />
-      <Route path="/deliveryman/edit" render={() => <DeliverymanForm edit={true} />} />
+      <Route
+        path="/deliveryman/edit"
+        render={() => <DeliverymanForm edit />}
+        isPrivate
+      />
 
-      <Route path="/recipients" component={RecipientsList} />
-      <Route path="/recipient/register" component={RecipientForm} />
-      <Route path="/recipient/edit" render={() => <RecipientForm edit={true} />} />
+      <Route path="/recipients" component={RecipientsList} isPrivate />
+      <Route path="/recipient/register" component={RecipientForm} isPrivate />
+      <Route
+        path="/recipient/edit"
+        render={() => <RecipientForm edit />}
+        isPrivate
+      />
 
-      <Route path="/delivery_problems" component={DeliveryProblems} />
+      <Route path="/delivery_problems" component={DeliveryProblems} isPrivate />
     </Switch>
-  )
+  );
 }
