@@ -29,7 +29,7 @@ export default function Routes() {
         isPrivate
       />
 
-      <Route path="/deliverymen" component={DeliverymenList} />
+      <Route path="/deliverymen" component={DeliverymenList} isPrivate />
       <Route path="/deliveryman/register" component={DeliverymanForm} />
       <Route
         path="/deliveryman/edit"
