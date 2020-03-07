@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { MdAdd, MdMoreHoriz, MdSearch } from 'react-icons/md';
+
+import ActionMenu from '~/components/ActionMenu';
 
 import {
   Container,
@@ -12,6 +14,8 @@ import {
 } from './styles';
 
 export default function DeliveriesList() {
+  const [clickedOnMore, setClickedOnMore] = useState(false);
+
   return (
     <Container>
       <Content>
@@ -55,7 +59,11 @@ export default function DeliveriesList() {
                 ENTREGUE
               </StatusTableData>
               <td>
-                <MdMoreHoriz size={24} />
+                <MdMoreHoriz
+                  size={24}
+                  onClick={() => setClickedOnMore(!clickedOnMore)}
+                />
+                {clickedOnMore && <ActionMenu />}
               </td>
             </tr>
           </DeliveriesTable>

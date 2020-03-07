@@ -7,7 +7,7 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   margin: 20px auto;
-  max-width: 900px;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
 
