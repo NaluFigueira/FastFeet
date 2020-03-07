@@ -25,7 +25,7 @@ export default function Routes() {
       <Route path="/delivery/register" component={DeliveryForm} isPrivate />
       <Route
         path="/delivery/edit"
-        render={() => <DeliveryForm edit />}
+        component={() => <DeliveryForm edit />}
         isPrivate
       />
 
@@ -33,7 +33,7 @@ export default function Routes() {
       <Route path="/deliveryman/register" component={DeliverymanForm} />
       <Route
         path="/deliveryman/edit"
-        render={() => <DeliverymanForm edit />}
+        component={() => <DeliverymanForm edit />}
         isPrivate
       />
 
@@ -41,7 +41,7 @@ export default function Routes() {
       <Route path="/recipient/register" component={RecipientForm} isPrivate />
       <Route
         path="/recipient/edit"
-        render={() => <RecipientForm edit />}
+        component={() => <RecipientForm edit />}
         isPrivate
       />
 

@@ -9,6 +9,7 @@ export const Menu = styled.div`
   display: flex;
   padding: 10px 15px;
   flex-direction: column;
+  background-color: white;
 `;
 
 export const MenuItem = styled.div`

@@ -1,6 +1,19 @@
 import styled from 'styled-components';
 import { darken, lighten } from 'polished';
 
+const getColorByStatus = (status, normal = true) => {
+  switch (status) {
+    case 'delivered':
+      return normal ? '#2CA42B' : lighten(0.5, '#2CA42B');
+    case 'pending':
+      return normal ? '#C1BC35' : lighten(0.45, '#C1BC35');
+    case 'canceled':
+      return normal ? '#DE3B3B' : lighten(0.3, '#DE3B3B');
+    default:
+      return normal ? '#4D85EE' : lighten(0.3, '#4D85EE');
+  }
+};
+
 export const Container = styled.div`
   width: 100%;
 `;
@@ -105,48 +118,37 @@ export const StatusTableData = styled.td`
   border-radius: 10px;
   width: min-content;
   padding: 2px 8px;
-  color: ${props => {
-    switch (props.status) {
-      case 'delivered':
-        return '#2CA42B';
-      case 'pending':
-        return '#C1BC35';
-      case 'canceled':
-        return '#DE3B3B';
-      default:
-        return '#4D85EE';
-    }
-  }} !important;
+  color: ${props => getColorByStatus(props.status)} !important;
 
-  background-color: ${props => {
-    switch (props.status) {
-      case 'delivered':
-        return lighten(0.5, '#2CA42B');
-      case 'pending':
-        return lighten(0.45, '#C1BC35');
-      case 'canceled':
-        return lighten(0.3, '#DE3B3B');
-      default:
-        return lighten(0.3, '#4D85EE');
-    }
-  }};
+  background-color: ${props => getColorByStatus(props.status, false)};
 
   div {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     margin: 0 5px 0 0;
-    background-color: ${props => {
-      switch (props.status) {
-        case 'delivered':
-          return '#2CA42B';
-        case 'pending':
-          return '#C1BC35';
-        case 'canceled':
-          return '#DE3B3B';
-        default:
-          return '#4D85EE';
-      }
-    }};
+    background-color: ${props => getColorByStatus(props.status)};
+  }
+`;
+
+export const DeliveryDetails = styled.div`
+  margin-bottom: 20px;
+
+  h5 {
+    margin-bottom: 5px;
+  }
+
+  p,
+  strong {
+    color: #666;
+    margin-bottom: 10px;
+  }
+`;
+
+export const DeliverySignatureContainer = styled.div`
+  p {
+    color: #666;
+    margin-top: 10px;
+    text-align: center;
   }
 `;
