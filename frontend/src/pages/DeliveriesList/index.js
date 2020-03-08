@@ -130,6 +130,18 @@ export default function DeliveriesList() {
     if (loaded) setPage(pageNumber);
   }
 
+  async function handleDeleteDelivery() {
+    try {
+      await api.delete(`orders/${data[selectedDelivery].id}`);
+      setSelectedDelivery(-1);
+      loadDeliveries();
+      toast.success('Encomenda removida!');
+    } catch (error) {
+      toast.error('Falha na remoção da encomenda!');
+      console.tron.log(error);
+    }
+  }
+
   const handleInputSearch = event => {
     setSearchedDelivery(event.target.value);
   };
@@ -212,7 +224,7 @@ export default function DeliveriesList() {
                           <ActionMenu
                             route="delivery"
                             object={data[selectedDelivery]}
-                            onRemoveClick={() => {}}
+                            onRemoveClick={handleDeleteDelivery}
                             onVisualizeClick={() => setOpenDialog(true)}
                           />
                         )}
