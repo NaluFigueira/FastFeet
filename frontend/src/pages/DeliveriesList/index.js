@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import {
+  MdAdd,
+  MdMoreHoriz,
+  MdSearch,
+  MdArrowForward,
+  MdArrowBack,
+} from 'react-icons/md';
+import { toast } from 'react-toastify';
 
-import { MdAdd, MdMoreHoriz, MdSearch } from 'react-icons/md';
-
+import { lighten } from 'polished';
+import Button from '~/components/Button';
 import ActionMenu from '~/components/ActionMenu';
 import { Dialog, DialogContainer } from '~/components/Dialog';
+
+import api from '~/services/api';
+import history from '~/services/history';
 
 import {
   Container,
   Content,
   SearchBar,
+  PagesContainer,
+  PageCounter,
   DeliveriesTable,
   DeliverymanTableData,
   StatusTableData,
@@ -18,7 +31,10 @@ import {
 
 export default function DeliveriesList() {
   const [clickedOnMore, setClickedOnMore] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [selectedDelivery, setSelectedDelivery] = useState(-1);
+  const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(-1);
   const [data, setData] = useState([]);
 
   const genrateRandomColor = () => {
@@ -27,63 +43,147 @@ export default function DeliveriesList() {
     )}`;
   };
 
+  const getDeliverymanNameInitials = deliverymanName => {
+    const fullName = deliverymanName.split(' ');
+    let initials = fullName[0].charAt(0);
+    if (fullName.length > 0)
+      initials += fullName[fullName.length - 1].charAt(0);
+    return initials;
+  };
+
+  const getDeliveryStatus = (start_date, end_date, canceled_at) => {
+    if (canceled_at) return 'CANCELADA';
+    if (end_date) return 'ENTREGUE';
+    if (start_date) return 'RETIRADA';
+    return 'PENDENTE';
+  };
+
+  const getColorByStatus = (status, normal = true) => {
+    switch (status) {
+      case 'ENTREGUE':
+        return normal ? '#2CA42B' : lighten(0.5, '#2CA42B');
+      case 'PENDENTE':
+        return normal ? '#C1BC35' : lighten(0.45, '#C1BC35');
+      case 'CANCELADA':
+        return normal ? '#DE3B3B' : lighten(0.3, '#DE3B3B');
+      default:
+        return normal ? '#4D85EE' : lighten(0.3, '#4D85EE');
+    }
+  };
+
   useEffect(() => {
-    const color = genrateRandomColor();
-    setData([
-      {
-        id: 1,
-        product: 'Monitor',
-        canceled_at: null,
-        start_date: null,
-        end_date: null,
-        status: 'pending',
-        signature: null,
-        deliveryman: {
-          name: 'João da Silva',
-          initials: 'JD',
-          color,
-        },
-        recipient: {
-          name: 'Julia Oliveira',
-          street: 'Avenida Brasil',
-          number: '198',
-          additional_address: 'Edifício Sol Nascente, Apt. 2',
-          state: 'São Paulo',
-          city: 'Jardim Paulista',
-          zip_code: '01430000',
-        },
-      },
-      {
-        id: 3,
-        product: 'Monitor',
-        canceled_at: null,
-        start_date: null,
-        end_date: null,
-        signature: null,
-        status: 'pending',
-        deliveryman: {
-          name: 'João da Silva',
-          initials: 'JD',
-          color,
-        },
-        recipient: {
-          name: 'Julia Oliveira',
-          street: 'Avenida Brasil',
-          number: '198',
-          additional_address: 'Edifício Sol Nascente, Apt. 2',
-          state: 'São Paulo',
-          city: 'Jardim Paulista',
-          zip_code: '01430000',
-        },
-      },
-    ]);
+    async function loadDeliveries() {
+      try {
+        const response = await api.get('orders');
+        setData(
+          response.data.orders.map(delivery => {
+            const color = genrateRandomColor();
+            const initials = getDeliverymanNameInitials(
+              delivery.deliveryman.name
+            );
+            const status = getDeliveryStatus(
+              delivery.start_date,
+              delivery.end_date,
+              delivery.canceled_at
+            );
+            return {
+              ...delivery,
+              color,
+              initials,
+              status,
+            };
+          })
+        );
+        setMaxPage(response.data.maxPage);
+      } catch (error) {
+        toast.error('Falha ao carregar encomendas!');
+        console.tron.log(error);
+      }
+    }
+    loadDeliveries();
   }, []);
+
+  async function searchDelivery(productName) {
+    try {
+      const response = await api.get('orders', {
+        params: {
+          product: productName,
+        },
+      });
+      setData(
+        response.data.orders.map(delivery => {
+          const color = genrateRandomColor();
+          const initials = getDeliverymanNameInitials(
+            delivery.deliveryman.name
+          );
+          const status = getDeliveryStatus(
+            delivery.start_date,
+            delivery.end_date,
+            delivery.canceled_at
+          );
+          return {
+            ...delivery,
+            color,
+            initials,
+            status,
+          };
+        })
+      );
+    } catch (error) {
+      toast.error('Falha ao carregar encomendas!');
+      console.tron.log(error);
+    }
+  }
+
+  async function handleChangePage(next = true) {
+    try {
+      const pageNumber = next ? page + 1 : page - 1;
+      const response = await api.get('orders', {
+        params: {
+          page: pageNumber,
+        },
+      });
+      setData(
+        response.data.orders.map(delivery => {
+          const color = genrateRandomColor();
+          const initials = getDeliverymanNameInitials(
+            delivery.deliveryman.name
+          );
+          const status = getDeliveryStatus(
+            delivery.start_date,
+            delivery.end_date,
+            delivery.canceled_at
+          );
+          return {
+            ...delivery,
+            color,
+            initials,
+            status,
+          };
+        })
+      );
+      setPage(pageNumber);
+    } catch (error) {
+      toast.error('Falha ao carregar encomendas!');
+      console.tron.log(error);
+    }
+  }
+
+  const handleChange = e => {
+    const searchedProductName = e.target.value;
+    searchDelivery(searchedProductName);
+  };
 
   return (
     <>
-      {selectedDelivery !== -1 && clickedOnMore === false && (
+      {openDialog && (
         <>
-          <DialogContainer onClick={() => setSelectedDelivery(-1)} />
+          <DialogContainer
+            onClick={() => {
+              setOpenDialog(false);
+              setSelectedDelivery(-1);
+            }}
+          />
           <Dialog>
             <DeliveryDetails>
               <h5>Informações da encomenda</h5>
@@ -120,64 +220,94 @@ export default function DeliveriesList() {
           <div>
             <SearchBar>
               <MdSearch size={18} color="#999" />
-              <input type="text" placeholder="Buscar por encomendas" />
+              <input
+                type="text"
+                onChange={handleChange}
+                placeholder="Buscar por encomendas"
+              />
             </SearchBar>
-            <button type="button">
+            <Button
+              type="button"
+              onClick={() => history.push('/delivery/register')}
+            >
               <MdAdd size={24} style={{ marginRight: 10 }} />
               Cadastrar
-            </button>
+            </Button>
           </div>
           <div>
-            <DeliveriesTable>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Destinatário</th>
-                  <th>Entregador</th>
-                  <th>Cidade</th>
-                  <th>Estado</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((delivery, index) => (
-                  <tr key={delivery.id}>
-                    <td>#{delivery.id}</td>
-                    <td>{delivery.recipient.name}</td>
-                    <DeliverymanTableData color={delivery.deliveryman.color}>
-                      <div>{delivery.deliveryman.initials}</div>
-                      {delivery.deliveryman.name}
-                    </DeliverymanTableData>
-                    <td>{delivery.recipient.city}</td>
-                    <td>{delivery.recipient.state}</td>
-                    <StatusTableData status={delivery.status}>
-                      <div />
-                      {delivery.status.toUpperCase()}
-                    </StatusTableData>
-                    <td>
-                      <MdMoreHoriz
-                        size={32}
-                        onClick={() => {
-                          setSelectedDelivery(
-                            selectedDelivery !== -1 ? -1 : index
-                          );
-                          setClickedOnMore(!clickedOnMore);
-                        }}
-                      />
-                      {selectedDelivery === index && clickedOnMore && (
-                        <ActionMenu
-                          onEditClick={() => {}}
-                          onRemoveClick={() => {}}
-                          onVisualizeClick={() => setClickedOnMore(false)}
-                        />
-                      )}
-                    </td>
+            {data.length === 0 ? (
+              <span>Não foram encontradas encomendas</span>
+            ) : (
+              <DeliveriesTable>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Destinatário</th>
+                    <th>Entregador</th>
+                    <th>Cidade</th>
+                    <th>Estado</th>
+                    <th>Status</th>
+                    <th>Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </DeliveriesTable>
+                </thead>
+                <tbody>
+                  {data.map((delivery, index) => (
+                    <tr key={delivery.id}>
+                      <td>#{delivery.id}</td>
+                      <td>{delivery.recipient.name}</td>
+                      <DeliverymanTableData color={delivery.color}>
+                        <div>{delivery.initials}</div>
+                        {delivery.deliveryman.name}
+                      </DeliverymanTableData>
+                      <td>{delivery.recipient.city}</td>
+                      <td>{delivery.recipient.state}</td>
+                      <StatusTableData
+                        color={getColorByStatus(delivery.status)}
+                        backgroundColor={getColorByStatus(
+                          delivery.status,
+                          false
+                        )}
+                      >
+                        <div />
+                        {delivery.status}
+                      </StatusTableData>
+                      <td>
+                        <MdMoreHoriz
+                          size={32}
+                          onClick={() => {
+                            setSelectedDelivery(index);
+                            setClickedOnMore(!(index === selectedDelivery));
+                          }}
+                        />
+                        {selectedDelivery === index && clickedOnMore && (
+                          <ActionMenu
+                            route="delivery"
+                            object={data[selectedDelivery]}
+                            onRemoveClick={() => {}}
+                            onVisualizeClick={() => {
+                              setClickedOnMore(false);
+                              setOpenDialog(true);
+                            }}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </DeliveriesTable>
+            )}
           </div>
+          <PagesContainer>
+            {page !== 1 && (
+              <MdArrowBack size={32} onClick={() => handleChangePage(false)} />
+            )}
+            <PageCounter>
+              <span>{page}</span>
+            </PageCounter>
+            {page !== maxPage && (
+              <MdArrowForward size={32} onClick={() => handleChangePage()} />
+            )}
+          </PagesContainer>
         </Content>
       </Container>
     </>

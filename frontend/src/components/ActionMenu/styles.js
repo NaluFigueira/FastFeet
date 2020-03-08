@@ -39,6 +39,10 @@ export const MenuItem = styled.div`
     }
   }
 
+  a {
+    color: #999;
+  }
+
   span {
     color: #999;
     font-size: 16px;

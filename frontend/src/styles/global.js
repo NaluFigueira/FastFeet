@@ -38,4 +38,20 @@ export default createGlobalStyle`
   button {
     cursor: pointer;
   }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #7d40e7;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4409b4;
+  }
 `;

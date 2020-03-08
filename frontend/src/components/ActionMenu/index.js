@@ -1,4 +1,7 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
+
+import { Link } from 'react-router-dom';
 
 import { MdRemoveRedEye, MdEdit, MdDelete } from 'react-icons/md';
 
@@ -8,7 +11,8 @@ import { Menu, MenuItem } from './styles';
 
 export default function ActionMenu({
   onRemoveClick,
-  onEditClick,
+  route,
+  object,
   onVisualizeClick,
 }) {
   return (
@@ -17,9 +21,16 @@ export default function ActionMenu({
         <MdRemoveRedEye size={15} />
         <span>Visualizar</span>
       </MenuItem>
-      <MenuItem iconColor="#4D85EE" onClick={onEditClick}>
+      <MenuItem iconColor="#4D85EE">
         <MdEdit size={15} />
-        <span>Editar</span>
+        <Link
+          to={{
+            pathname: `${route}/edit`,
+            state: { object, edit: true },
+          }}
+        >
+          Editar
+        </Link>
       </MenuItem>
       <MenuItem iconColor="#DE3B3B" onClick={onRemoveClick}>
         <MdDelete size={15} />
@@ -31,6 +42,7 @@ export default function ActionMenu({
 
 ActionMenu.propTypes = {
   onRemoveClick: PropTypes.func.isRequired,
-  onEditClick: PropTypes.func.isRequired,
+  route: PropTypes.string.isRequired,
+  object: PropTypes.object.isRequired,
   onVisualizeClick: PropTypes.func.isRequired,
 };

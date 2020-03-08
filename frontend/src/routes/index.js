@@ -23,27 +23,15 @@ export default function Routes() {
 
       <Route path="/deliveries" component={DeliveriesList} isPrivate />
       <Route path="/delivery/register" component={DeliveryForm} isPrivate />
-      <Route
-        path="/delivery/edit"
-        component={() => <DeliveryForm edit />}
-        isPrivate
-      />
+      <Route path="/delivery/edit" component={DeliveryForm} isPrivate />
 
       <Route path="/deliverymen" component={DeliverymenList} isPrivate />
       <Route path="/deliveryman/register" component={DeliverymanForm} />
-      <Route
-        path="/deliveryman/edit"
-        component={() => <DeliverymanForm edit />}
-        isPrivate
-      />
+      <Route path="/deliveryman/edit" component={DeliverymanForm} isPrivate />
 
       <Route path="/recipients" component={RecipientsList} isPrivate />
       <Route path="/recipient/register" component={RecipientForm} isPrivate />
-      <Route
-        path="/recipient/edit"
-        component={() => <RecipientForm edit />}
-        isPrivate
-      />
+      <Route path="/recipient/edit" component={RecipientForm} isPrivate />
 
       <Route path="/delivery_problems" component={DeliveryProblems} isPrivate />
     </Switch>

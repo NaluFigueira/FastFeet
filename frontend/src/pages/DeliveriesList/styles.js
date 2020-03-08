@@ -1,18 +1,5 @@
 import styled from 'styled-components';
-import { darken, lighten } from 'polished';
-
-const getColorByStatus = (status, normal = true) => {
-  switch (status) {
-    case 'delivered':
-      return normal ? '#2CA42B' : lighten(0.5, '#2CA42B');
-    case 'pending':
-      return normal ? '#C1BC35' : lighten(0.45, '#C1BC35');
-    case 'canceled':
-      return normal ? '#DE3B3B' : lighten(0.3, '#DE3B3B');
-    default:
-      return normal ? '#4D85EE' : lighten(0.3, '#4D85EE');
-  }
-};
+import { lighten, darken } from 'polished';
 
 export const Container = styled.div`
   width: 100%;
@@ -20,7 +7,7 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   margin: 20px auto;
-  max-width: 800px;
+  max-width: 850px;
   display: flex;
   flex-direction: column;
 
@@ -32,24 +19,6 @@ export const Content = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
-
-    button {
-      padding: 5px 16px;
-      border: 0;
-      border-radius: 4px;
-      background: #7d40e7;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      transition: background 0.2s;
-
-      &:hover {
-        background: ${darken(0.03, '#7d40e7')};
-      }
-    }
   }
 `;
 
@@ -103,7 +72,6 @@ export const DeliverymanTableData = styled.td`
 
   div {
     color: ${props => props.color};
-    background: ${props => lighten(0.6, props.color)};
     padding: 5px;
     width: min-content;
     border-radius: 50%;
@@ -118,21 +86,23 @@ export const StatusTableData = styled.td`
   border-radius: 10px;
   width: min-content;
   padding: 2px 8px;
-  color: ${props => getColorByStatus(props.status)} !important;
+  color: ${props => props.color} !important;
 
-  background-color: ${props => getColorByStatus(props.status, false)};
+  background-color: ${props => props.backgroundColor};
 
   div {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     margin: 0 5px 0 0;
-    background-color: ${props => getColorByStatus(props.status)};
+    background-color: ${props => props.color};
   }
 `;
 
 export const DeliveryDetails = styled.div`
   margin-bottom: 20px;
+  border-bottom: 1px solid ${lighten(0.4, '#707070')};
+  padding-bottom: 10px;
 
   h5 {
     margin-bottom: 5px;
@@ -150,5 +120,32 @@ export const DeliverySignatureContainer = styled.div`
     color: #666;
     margin-top: 10px;
     text-align: center;
+  }
+`;
+
+export const PagesContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+
+  svg {
+    color: #7d40e7;
+    cursor: pointer;
+  }
+`;
+
+export const PageCounter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    margin: 0px 10px;
+    color: #7d40e7;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 50%;
+    border: 2px solid ${darken(0.2, '#7d40e7')};
+    padding: 10px 15px;
   }
 `;

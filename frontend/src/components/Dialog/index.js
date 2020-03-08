@@ -6,7 +6,7 @@ export const Dialog = styled.div`
   position: fixed;
   z-index: 1;
   width: 30vw;
-  top: 30vh;
+  top: 25vh;
   left: 35vw;
 `;
 
