@@ -11,10 +11,11 @@ import OrderCreatedMail from "../jobs/OrderCreatedMail";
 
 class DeliverymanController {
   async index(req, res) {
-    const { product } = req.query;
+    const { product, page } = req.query;
 
     const querySchema = Yup.object().shape({
       product: Yup.string(),
+      page: Yup.number(),
     });
 
     if (!(await querySchema.isValid(req.body))) {
@@ -25,6 +26,8 @@ class DeliverymanController {
       where: {
         product: { [Op.iLike]: product ? `${product}%` : `%%` },
       },
+      limit: 10,
+      offset: ((page || 1) - 1) * 10,
       attributes: ["id", "product", "canceled_at", "start_date", "end_date"],
       include: [
         {
@@ -35,12 +38,13 @@ class DeliverymanController {
         {
           model: Deliveryman,
           as: "deliveryman",
-          attributes: ["name"],
+          attributes: ["id", "name"],
         },
         {
           model: Recipient,
           as: "recipient",
           attributes: [
+            "id",
             "name",
             "street",
             "number",
@@ -53,7 +57,14 @@ class DeliverymanController {
       ],
     });
 
-    return res.json(orders);
+    const numberOfOrders = await Order.count({
+      where: {
+        product: { [Op.iLike]: product ? `${product}%` : `%%` },
+      },
+    });
+    const maxPage = Math.ceil(numberOfOrders / 10);
+
+    return res.json({ orders, maxPage });
   }
 
   async store(req, res) {
