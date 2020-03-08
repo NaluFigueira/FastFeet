@@ -121,6 +121,16 @@ export const DeliverySignatureContainer = styled.div`
     margin-top: 10px;
     text-align: center;
   }
+
+  div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    img {
+      margin-top: 10px;
+    }
+  }
 `;
 
 export const PagesContainer = styled.div`

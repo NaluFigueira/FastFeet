@@ -207,8 +207,15 @@ export default function DeliveriesList() {
             </DeliveryDetails>
             <DeliverySignatureContainer>
               <h5>Assinatura do Destinatário</h5>
-              {!data[selectedDelivery].signature && (
+              {!data[selectedDelivery].signature ? (
                 <p>Não há assinatura disponível para essa encomenda!</p>
+              ) : (
+                <div>
+                  <img
+                    src={data[selectedDelivery].signature.url}
+                    alt="assinatura"
+                  />
+                </div>
               )}
             </DeliverySignatureContainer>
           </Dialog>
