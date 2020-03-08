@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
+import colors from '~/styles/colors';
 
 export const Wrapper = styled.div`
   height: 100%;
-  background: #7d40e7;
+  background: ${colors.primary};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,18 +29,18 @@ export const Content = styled.div`
     margin-top: 30px;
 
     label {
-      color: #444;
+      color: ${colors.title};
       margin: 10px 0px;
       text-align: start;
       text-transform: uppercase;
       font-weight: bold;
 
       input {
-        border: 1px solid #ddd;
+        border: 1px solid ${colors.border};
         border-radius: 4px;
         height: 44px;
         padding: 0 15px;
-        color: #999;
+        color: ${colors.body};
         display: block;
         width: 100%;
         margin: 10px 0px;
@@ -56,7 +57,7 @@ export const Content = styled.div`
     button {
       margin: 5px 0 0;
       height: 44px;
-      background: #7d40e7;
+      background: ${colors.primary};
       color: white;
       border: 0;
       border-radius: 4px;
@@ -64,7 +65,7 @@ export const Content = styled.div`
       transition: background 0.2s;
 
       &:hover {
-        background: ${darken(0.03, '#7d40e7')};
+        background: ${darken(0.03, colors.primary)};
       }
     }
   }

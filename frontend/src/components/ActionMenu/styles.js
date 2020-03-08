@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { lighten } from 'polished';
+import colors from '~/styles/colors';
 
 export const Menu = styled.div`
   position: absolute;
   width: 130px !important;
-  border: 1px solid ${lighten(0.4, '#707070')};
+  border: 1px solid ${lighten(0.4, colors.border)};
   border-radius: 4px;
   display: flex;
   padding: 10px 15px;
@@ -17,7 +18,7 @@ export const MenuItem = styled.div`
   align-items: center;
   padding: 10px 0px;
   width: 100%;
-  border-bottom: 1px solid ${lighten(0.4, '#707070')};
+  border-bottom: 1px solid ${lighten(0.4, colors.border)};
 
   &:first-child {
     padding-top: 0;
@@ -40,11 +41,11 @@ export const MenuItem = styled.div`
   }
 
   a {
-    color: #999;
+    color: ${colors.body};
   }
 
   span {
-    color: #999;
+    color: ${colors.body};
     font-size: 16px;
   }
 `;

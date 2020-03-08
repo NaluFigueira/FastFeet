@@ -7,11 +7,12 @@ import {
   MdArrowBack,
 } from 'react-icons/md';
 import { toast } from 'react-toastify';
-
 import { lighten } from 'polished';
+
+import colors from '~/styles/colors';
 import Button from '~/components/Button';
 import ActionMenu from '~/components/ActionMenu';
-import { Dialog, DialogContainer } from '~/components/Dialog';
+import DeliveryDetailsDialog from '~/components/DeliveryDetailsDialog';
 
 import api from '~/services/api';
 import history from '~/services/history';
@@ -25,16 +26,14 @@ import {
   DeliveriesTable,
   DeliverymanTableData,
   StatusTableData,
-  DeliveryDetails,
-  DeliverySignatureContainer,
 } from './styles';
 
 export default function DeliveriesList() {
-  const [clickedOnMore, setClickedOnMore] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDelivery, setSelectedDelivery] = useState(-1);
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(-1);
+  const [searchedDelivery, setSearchedDelivery] = useState('');
   const [data, setData] = useState([]);
 
   const genrateRandomColor = () => {
@@ -58,178 +57,104 @@ export default function DeliveriesList() {
     return 'PENDENTE';
   };
 
-  const getColorByStatus = (status, normal = true) => {
+  const getColorByStatus = (status, type = 'text') => {
     switch (status) {
       case 'ENTREGUE':
-        return normal ? '#2CA42B' : lighten(0.5, '#2CA42B');
+        return type === 'text'
+          ? colors.delivered
+          : lighten(0.5, colors.delivered);
       case 'PENDENTE':
-        return normal ? '#C1BC35' : lighten(0.45, '#C1BC35');
+        return type === 'text'
+          ? colors.pendiing
+          : lighten(0.45, colors.pendiing);
       case 'CANCELADA':
-        return normal ? '#DE3B3B' : lighten(0.3, '#DE3B3B');
+        return type === 'text'
+          ? colors.canceled
+          : lighten(0.3, colors.canceled);
       default:
-        return normal ? '#4D85EE' : lighten(0.3, '#4D85EE');
+        return type === 'text' ? colors.started : lighten(0.3, colors.started);
     }
   };
 
-  useEffect(() => {
-    async function loadDeliveries() {
-      try {
-        const response = await api.get('orders');
-        setData(
-          response.data.orders.map(delivery => {
-            const color = genrateRandomColor();
-            const initials = getDeliverymanNameInitials(
-              delivery.deliveryman.name
-            );
-            const status = getDeliveryStatus(
-              delivery.start_date,
-              delivery.end_date,
-              delivery.canceled_at
-            );
-            return {
-              ...delivery,
-              color,
-              initials,
-              status,
-            };
-          })
+  const setDeliveries = deliveries => {
+    setData(
+      deliveries.map(delivery => {
+        const color = genrateRandomColor();
+        const initials = getDeliverymanNameInitials(delivery.deliveryman.name);
+        const status = getDeliveryStatus(
+          delivery.start_date,
+          delivery.end_date,
+          delivery.canceled_at
         );
-        setMaxPage(response.data.maxPage);
-      } catch (error) {
-        toast.error('Falha ao carregar encomendas!');
-        console.tron.log(error);
-      }
-    }
-    loadDeliveries();
-  }, []);
+        return {
+          ...delivery,
+          color,
+          initials,
+          status,
+        };
+      })
+    );
+  };
 
-  async function searchDelivery(productName) {
+  async function loadDeliveries(product = '', pageNumber = 1) {
     try {
       const response = await api.get('orders', {
         params: {
-          product: productName,
-        },
-      });
-      setData(
-        response.data.orders.map(delivery => {
-          const color = genrateRandomColor();
-          const initials = getDeliverymanNameInitials(
-            delivery.deliveryman.name
-          );
-          const status = getDeliveryStatus(
-            delivery.start_date,
-            delivery.end_date,
-            delivery.canceled_at
-          );
-          return {
-            ...delivery,
-            color,
-            initials,
-            status,
-          };
-        })
-      );
-    } catch (error) {
-      toast.error('Falha ao carregar encomendas!');
-      console.tron.log(error);
-    }
-  }
-
-  async function handleChangePage(next = true) {
-    try {
-      const pageNumber = next ? page + 1 : page - 1;
-      const response = await api.get('orders', {
-        params: {
+          product:
+            product === '' && searchedDelivery !== ''
+              ? searchedDelivery
+              : product,
           page: pageNumber,
         },
       });
-      setData(
-        response.data.orders.map(delivery => {
-          const color = genrateRandomColor();
-          const initials = getDeliverymanNameInitials(
-            delivery.deliveryman.name
-          );
-          const status = getDeliveryStatus(
-            delivery.start_date,
-            delivery.end_date,
-            delivery.canceled_at
-          );
-          return {
-            ...delivery,
-            color,
-            initials,
-            status,
-          };
-        })
-      );
-      setPage(pageNumber);
+      setDeliveries(response.data.orders);
+      setMaxPage(response.data.maxPage);
+      return true;
     } catch (error) {
       toast.error('Falha ao carregar encomendas!');
-      console.tron.log(error);
+      return false;
     }
   }
 
-  const handleChange = e => {
-    const searchedProductName = e.target.value;
-    searchDelivery(searchedProductName);
+  useEffect(() => {
+    loadDeliveries();
+  }, []);
+
+  useEffect(() => {
+    const loaded = loadDeliveries();
+    if (loaded) setPage(1);
+  }, [searchedDelivery]);
+
+  async function handleChangePage(pageNumber) {
+    const loaded = loadDeliveries('', pageNumber);
+    if (loaded) setPage(pageNumber);
+  }
+
+  const handleInputSearch = event => {
+    setSearchedDelivery(event.target.value);
   };
 
   return (
     <>
       {openDialog && (
-        <>
-          <DialogContainer
-            onClick={() => {
-              setOpenDialog(false);
-              setSelectedDelivery(-1);
-            }}
-          />
-          <Dialog>
-            <DeliveryDetails>
-              <h5>Informações da encomenda</h5>
-              <p>{data[selectedDelivery].recipient.street}</p>
-              <p>
-                {`${data[selectedDelivery].recipient.city} - ${data[selectedDelivery].recipient.state}`}
-              </p>
-              <p>{data[selectedDelivery].recipient.zip_code}</p>
-            </DeliveryDetails>
-            <DeliveryDetails>
-              <h5>Datas</h5>
-              <p>
-                <strong>Retirada: </strong>
-                {data[selectedDelivery].start_date || 'Ainda não retirado'}
-              </p>
-              <p>
-                <strong>Entrega: </strong>
-                {data[selectedDelivery].end_date || 'Ainda não entregue'}
-              </p>
-              <p>{data[selectedDelivery].zip_code}</p>
-            </DeliveryDetails>
-            <DeliverySignatureContainer>
-              <h5>Assinatura do Destinatário</h5>
-              {!data[selectedDelivery].signature ? (
-                <p>Não há assinatura disponível para essa encomenda!</p>
-              ) : (
-                <div>
-                  <img
-                    src={data[selectedDelivery].signature.url}
-                    alt="assinatura"
-                  />
-                </div>
-              )}
-            </DeliverySignatureContainer>
-          </Dialog>
-        </>
+        <DeliveryDetailsDialog
+          onCloseDialog={() => {
+            setOpenDialog(false);
+            setSelectedDelivery(-1);
+          }}
+          delivery={data[selectedDelivery]}
+        />
       )}
       <Container>
         <Content>
           <h2>Gerenciando encomendas</h2>
           <div>
             <SearchBar>
-              <MdSearch size={18} color="#999" />
+              <MdSearch size={18} color={colors.body} />
               <input
                 type="text"
-                onChange={handleChange}
+                value={searchedDelivery}
+                onChange={handleInputSearch}
                 placeholder="Buscar por encomendas"
               />
             </SearchBar>
@@ -272,7 +197,7 @@ export default function DeliveriesList() {
                         color={getColorByStatus(delivery.status)}
                         backgroundColor={getColorByStatus(
                           delivery.status,
-                          false
+                          'background'
                         )}
                       >
                         <div />
@@ -281,20 +206,14 @@ export default function DeliveriesList() {
                       <td>
                         <MdMoreHoriz
                           size={32}
-                          onClick={() => {
-                            setSelectedDelivery(index);
-                            setClickedOnMore(!(index === selectedDelivery));
-                          }}
+                          onClick={() => setSelectedDelivery(index)}
                         />
-                        {selectedDelivery === index && clickedOnMore && (
+                        {selectedDelivery === index && (
                           <ActionMenu
                             route="delivery"
                             object={data[selectedDelivery]}
                             onRemoveClick={() => {}}
-                            onVisualizeClick={() => {
-                              setClickedOnMore(false);
-                              setOpenDialog(true);
-                            }}
+                            onVisualizeClick={() => setOpenDialog(true)}
                           />
                         )}
                       </td>
@@ -304,17 +223,25 @@ export default function DeliveriesList() {
               </DeliveriesTable>
             )}
           </div>
-          <PagesContainer>
-            {page !== 1 && (
-              <MdArrowBack size={32} onClick={() => handleChangePage(false)} />
-            )}
-            <PageCounter>
-              <span>{page}</span>
-            </PageCounter>
-            {page !== maxPage && (
-              <MdArrowForward size={32} onClick={() => handleChangePage()} />
-            )}
-          </PagesContainer>
+          {maxPage > 1 && (
+            <PagesContainer>
+              {page !== 1 && (
+                <MdArrowBack
+                  size={32}
+                  onClick={() => handleChangePage(page - 1)}
+                />
+              )}
+              <PageCounter>
+                <span>{page}</span>
+              </PageCounter>
+              {page !== maxPage && (
+                <MdArrowForward
+                  size={32}
+                  onClick={() => handleChangePage(page + 1)}
+                />
+              )}
+            </PagesContainer>
+          )}
         </Content>
       </Container>
     </>

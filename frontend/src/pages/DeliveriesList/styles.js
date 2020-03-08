@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { lighten, darken } from 'polished';
+import { darken } from 'polished';
 
 export const Container = styled.div`
   width: 100%;
@@ -96,40 +96,6 @@ export const StatusTableData = styled.td`
     border-radius: 50%;
     margin: 0 5px 0 0;
     background-color: ${props => props.color};
-  }
-`;
-
-export const DeliveryDetails = styled.div`
-  margin-bottom: 20px;
-  border-bottom: 1px solid ${lighten(0.4, '#707070')};
-  padding-bottom: 10px;
-
-  h5 {
-    margin-bottom: 5px;
-  }
-
-  p,
-  strong {
-    color: #666;
-    margin-bottom: 10px;
-  }
-`;
-
-export const DeliverySignatureContainer = styled.div`
-  p {
-    color: #666;
-    margin-top: 10px;
-    text-align: center;
-  }
-
-  div {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-
-    img {
-      margin-top: 10px;
-    }
   }
 `;
 
