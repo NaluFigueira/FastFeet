@@ -6,10 +6,11 @@ import Recipient from "../models/Recipient";
 
 class RecipientController {
   async index(req, res) {
-    const { name } = req.query;
+    const { name, page } = req.query;
 
     const querySchema = Yup.object().shape({
       name: Yup.string(),
+      page: Yup.number(),
     });
 
     if (!(await querySchema.isValid(req.body))) {
@@ -22,6 +23,8 @@ class RecipientController {
       where: {
         name: { [Op.iLike]: name ? `${name}%` : `%%` },
       },
+      limit: 10,
+      offset: ((page || 1) - 1) * 10,
       attributes: [
         "id",
         "name",
@@ -34,7 +37,14 @@ class RecipientController {
       ],
     });
 
-    return res.json(recipients);
+    const numberOfRecipients = await Recipient.count({
+      where: {
+        name: { [Op.iLike]: name ? `${name}%` : `%%` },
+      },
+    });
+    const maxPage = Math.ceil(numberOfRecipients / 10);
+
+    return res.json({ recipients, maxPage });
   }
 
   async store(req, res) {
