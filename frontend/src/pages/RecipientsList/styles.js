@@ -39,7 +39,7 @@ export const SearchBar = styled.div`
   }
 `;
 
-export const DeliveriesTable = styled.table`
+export const RecipientsTable = styled.table`
   width: 100%;
 
   th {
@@ -62,38 +62,5 @@ export const DeliveriesTable = styled.table`
         color: #c6c6c6;
       }
     }
-  }
-`;
-
-export const DeliverymanTableData = styled.td`
-  display: flex;
-  align-items: center;
-
-  div {
-    color: ${props => props.color};
-    padding: 5px;
-    width: min-content;
-    border-radius: 50%;
-    margin-right: 5px;
-  }
-`;
-
-export const StatusTableData = styled.td`
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  border-radius: 10px;
-  width: min-content;
-  padding: 2px 8px;
-  color: ${props => props.color} !important;
-
-  background-color: ${props => props.backgroundColor};
-
-  div {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 0 5px 0 0;
-    background-color: ${props => props.color};
   }
 `;

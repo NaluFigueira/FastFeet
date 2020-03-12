@@ -17,10 +17,12 @@ export default function ActionMenu({
 }) {
   return (
     <Menu>
-      <MenuItem iconColor="#8E5BE8" onClick={onVisualizeClick}>
-        <MdRemoveRedEye size={15} />
-        <span>Visualizar</span>
-      </MenuItem>
+      {onVisualizeClick && (
+        <MenuItem iconColor="#8E5BE8" onClick={onVisualizeClick}>
+          <MdRemoveRedEye size={15} />
+          <span>Visualizar</span>
+        </MenuItem>
+      )}
       <MenuItem iconColor="#4D85EE">
         <MdEdit size={15} />
         <Link
@@ -40,9 +42,13 @@ export default function ActionMenu({
   );
 }
 
+ActionMenu.defaultProps = {
+  onVisualizeClick: null,
+};
+
 ActionMenu.propTypes = {
   onRemoveClick: PropTypes.func.isRequired,
   route: PropTypes.string.isRequired,
   object: PropTypes.object.isRequired,
-  onVisualizeClick: PropTypes.func.isRequired,
+  onVisualizeClick: PropTypes.func,
 };

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  MdAdd,
-  MdMoreHoriz,
-  MdSearch,
-  MdArrowForward,
-  MdArrowBack,
-} from 'react-icons/md';
+import { MdAdd, MdMoreHoriz, MdSearch } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { lighten } from 'polished';
 
@@ -13,6 +7,7 @@ import colors from '~/styles/colors';
 import Button from '~/components/Button';
 import ActionMenu from '~/components/ActionMenu';
 import DeliveryDetailsDialog from '~/components/DeliveryDetailsDialog';
+import Pagination from '~/components/Pagination';
 
 import api from '~/services/api';
 import history from '~/services/history';
@@ -21,8 +16,6 @@ import {
   Container,
   Content,
   SearchBar,
-  PagesContainer,
-  PageCounter,
   DeliveriesTable,
   DeliverymanTableData,
   StatusTableData,
@@ -33,7 +26,6 @@ export default function DeliveriesList() {
   const [selectedDelivery, setSelectedDelivery] = useState(-1);
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(-1);
-  const [searchedDelivery, setSearchedDelivery] = useState('');
   const [data, setData] = useState([]);
 
   const genrateRandomColor = () => {
@@ -100,10 +92,7 @@ export default function DeliveriesList() {
     try {
       const response = await api.get('orders', {
         params: {
-          product:
-            product === '' && searchedDelivery !== ''
-              ? searchedDelivery
-              : product,
+          product,
           page: pageNumber,
         },
       });
@@ -119,11 +108,6 @@ export default function DeliveriesList() {
   useEffect(() => {
     loadDeliveries();
   }, []);
-
-  useEffect(() => {
-    const loaded = loadDeliveries();
-    if (loaded) setPage(1);
-  }, [searchedDelivery]);
 
   async function handleChangePage(pageNumber) {
     const loaded = loadDeliveries('', pageNumber);
@@ -143,7 +127,8 @@ export default function DeliveriesList() {
   }
 
   const handleInputSearch = event => {
-    setSearchedDelivery(event.target.value);
+    const loaded = loadDeliveries(event.target.value);
+    if (loaded) setPage(1);
   };
 
   return (
@@ -165,7 +150,6 @@ export default function DeliveriesList() {
               <MdSearch size={18} color={colors.body} />
               <input
                 type="text"
-                value={searchedDelivery}
                 onChange={handleInputSearch}
                 placeholder="Buscar por encomendas"
               />
@@ -218,7 +202,11 @@ export default function DeliveriesList() {
                       <td>
                         <MdMoreHoriz
                           size={32}
-                          onClick={() => setSelectedDelivery(index)}
+                          onClick={() =>
+                            setSelectedDelivery(
+                              selectedDelivery === index ? -1 : index
+                            )
+                          }
                         />
                         {selectedDelivery === index && (
                           <ActionMenu
@@ -236,23 +224,11 @@ export default function DeliveriesList() {
             )}
           </div>
           {maxPage > 1 && (
-            <PagesContainer>
-              {page !== 1 && (
-                <MdArrowBack
-                  size={32}
-                  onClick={() => handleChangePage(page - 1)}
-                />
-              )}
-              <PageCounter>
-                <span>{page}</span>
-              </PageCounter>
-              {page !== maxPage && (
-                <MdArrowForward
-                  size={32}
-                  onClick={() => handleChangePage(page + 1)}
-                />
-              )}
-            </PagesContainer>
+            <Pagination
+              maxPage={maxPage}
+              page={page}
+              handleChangePage={handleChangePage}
+            />
           )}
         </Content>
       </Container>
