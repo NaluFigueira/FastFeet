@@ -5,7 +5,7 @@ const colors = {
   gray: '#CCC',
 
   background: '#ddd',
-  border: '#707070',
+  border: '#ddd',
 
   body: '#999',
   title: '#444',

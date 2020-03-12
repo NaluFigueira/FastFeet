@@ -1,5 +1,7 @@
 import React from 'react';
 
+import PropTypes from 'prop-types';
+
 import { MdArrowForward, MdArrowBack } from 'react-icons/md';
 
 import { PagesContainer, PageCounter } from './styles';
@@ -19,3 +21,9 @@ export default function Pagination({ page, maxPage, handleChangePage }) {
     </PagesContainer>
   );
 }
+
+Pagination.propTypes = {
+  page: PropTypes.number.isRequired,
+  maxPage: PropTypes.number.isRequired,
+  handleChangePage: PropTypes.func.isRequired,
+};

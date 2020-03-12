@@ -42,6 +42,14 @@ export const Content = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+    background-color: white;
+    padding: 20px 30px;
+    border-radius: 4px;
+    margin-top: 30px;
+
+    label {
+      font-weight: bold;
+    }
 
     div label span {
       color: red;

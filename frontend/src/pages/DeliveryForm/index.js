@@ -36,7 +36,7 @@ export default function DeliveryForm() {
     try {
       const response = await api.get('recipients');
       setRecipients(
-        response.data.map(r => {
+        response.data.recipients.map(r => {
           return { value: r.id, label: r.name };
         })
       );
@@ -109,10 +109,14 @@ export default function DeliveryForm() {
             deliveryman_id: deliveryman.value,
             product,
           });
-        toast.success('Encomenda cadastrada com sucesso!');
+        toast.success(
+          `Encomenda ${edit ? 'editada' : 'cadastrada'} com sucesso!`
+        );
         history.push('/deliveries');
       } catch (error) {
-        toast.error('Falha no cadastro da encomenda!');
+        toast.error(
+          `Falha ${edit ? 'na edição' : 'no cadastro'} da encomenda!`
+        );
         console.tron.log(error);
       }
     }
@@ -121,33 +125,34 @@ export default function DeliveryForm() {
   return (
     <Container>
       <Content>
-        <form onSubmit={handleSubmit}>
-          <ActionsContainer>
-            {edit ? (
-              <h2>Edição de encomendas</h2>
-            ) : (
-              <h2>Cadastro de encomendas</h2>
-            )}
-            <ButtonsContainer>
-              <Button onClick={() => history.push('/deliveries')} gray>
-                <MdArrowBack
-                  size={18}
-                  color="white"
-                  style={{ marginRight: 10 }}
-                />
-                Voltar
-              </Button>
-              <Button type="submit">
-                <MdCheck size={18} color="white" style={{ marginRight: 10 }} />
-                Salvar
-              </Button>
-            </ButtonsContainer>
-          </ActionsContainer>
+        <ActionsContainer>
+          {edit ? (
+            <h2>Edição de encomendas</h2>
+          ) : (
+            <h2>Cadastro de encomendas</h2>
+          )}
+          <ButtonsContainer>
+            <Button onClick={() => history.push('/deliveries')} gray>
+              <MdArrowBack
+                size={18}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+              Voltar
+            </Button>
+            <Button form="form" type="submit">
+              <MdCheck size={18} color="white" style={{ marginRight: 10 }} />
+              Salvar
+            </Button>
+          </ButtonsContainer>
+        </ActionsContainer>
+        <form id="form" onSubmit={handleSubmit}>
           <SelectContainer>
             <label htmlFor="recipient">
               Destinatário
               <AsyncSelect
                 cacheOptions
+                value={recipient}
                 loadOptions={value => loadOptions(value, 'recipients')}
                 onChange={setRecipient}
                 defaultOptions={recipients}
@@ -161,6 +166,7 @@ export default function DeliveryForm() {
               Entregador
               <AsyncSelect
                 cacheOptions
+                value={deliveryman}
                 loadOptions={value => loadOptions(value, 'deliveryman')}
                 onChange={setDeliveryman}
                 defaultOptions={deliverymen}
