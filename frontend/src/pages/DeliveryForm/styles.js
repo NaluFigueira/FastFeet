@@ -4,6 +4,7 @@ export const CustomAsyncSelectStyles = {
   container: base => ({
     ...base,
     marginTop: 10,
+    marginBottom: 5,
   }),
   control: base => ({
     ...base,
@@ -41,6 +42,12 @@ export const Content = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+
+    div label span {
+      color: red;
+      font-weight: bold;
+      margin-top: 5px;
+    }
   }
 `;
 

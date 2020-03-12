@@ -25,6 +25,7 @@ export default function DeliveryForm() {
   const [deliveryman, setDeliveryman] = useState(null);
   const [recipient, setRecipient] = useState(null);
   const [product, setProduct] = useState('');
+  const [invalidSubmit, setInvalidSubmit] = useState(false);
   const location = useLocation();
   const { object: delivery, edit } = location.state || {
     edit: false,
@@ -90,25 +91,30 @@ export default function DeliveryForm() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    try {
-      if (edit)
-        await api.put('orders', {
-          id: delivery.id,
-          recipient_id: recipient.value,
-          deliveryman_id: deliveryman.value,
-          product,
-        });
-      else
-        await api.post('orders', {
-          recipient_id: recipient.value,
-          deliveryman_id: deliveryman.value,
-          product,
-        });
-      toast.success('Encomenda cadastrada com sucesso!');
-      history.push('/deliveries');
-    } catch (error) {
-      toast.error('Falha no cadastro da encomenda!');
-      console.tron.log(error);
+    if (recipient === null || deliveryman === null || product === '')
+      setInvalidSubmit(true);
+    else {
+      setInvalidSubmit(false);
+      try {
+        if (edit)
+          await api.put('orders', {
+            id: delivery.id,
+            recipient_id: recipient.value,
+            deliveryman_id: deliveryman.value,
+            product,
+          });
+        else
+          await api.post('orders', {
+            recipient_id: recipient.value,
+            deliveryman_id: deliveryman.value,
+            product,
+          });
+        toast.success('Encomenda cadastrada com sucesso!');
+        history.push('/deliveries');
+      } catch (error) {
+        toast.error('Falha no cadastro da encomenda!');
+        console.tron.log(error);
+      }
     }
   }
 
@@ -142,36 +148,40 @@ export default function DeliveryForm() {
               Destinatário
               <AsyncSelect
                 cacheOptions
-                name="recipient"
-                value={recipient}
                 loadOptions={value => loadOptions(value, 'recipients')}
                 onChange={setRecipient}
                 defaultOptions={recipients}
                 styles={CustomAsyncSelectStyles}
               />
+              {recipient === null && invalidSubmit && (
+                <span>Este campo é obrigatório!</span>
+              )}
             </label>
             <label htmlFor="deliveryman">
               Entregador
               <AsyncSelect
                 cacheOptions
-                name="deliveryman"
-                value={deliveryman}
                 loadOptions={value => loadOptions(value, 'deliveryman')}
                 onChange={setDeliveryman}
                 defaultOptions={deliverymen}
                 styles={CustomAsyncSelectStyles}
               />
+              {deliveryman === null && invalidSubmit && (
+                <span>Este campo é obrigatório!</span>
+              )}
             </label>
           </SelectContainer>
           <div>
             <label htmlFor="product">
               Produto
               <Input
-                name="product"
                 placeholder="Insira o nome do produto..."
                 value={product}
                 onChange={event => setProduct(event.target.value)}
               />
+              {product === '' && invalidSubmit && (
+                <span>Este campo é obrigatório!</span>
+              )}
             </label>
           </div>
         </form>
