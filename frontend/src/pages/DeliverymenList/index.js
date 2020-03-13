@@ -98,7 +98,7 @@ export default function DeliverymenList() {
   return (
     <Container>
       <Content>
-        <h2>Gerenciando entregadores(as)</h2>
+        <h2>Gerenciando entregadores</h2>
         <div>
           <SearchBar>
             <MdSearch size={18} color={colors.body} />

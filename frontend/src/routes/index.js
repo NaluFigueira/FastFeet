@@ -26,7 +26,11 @@ export default function Routes() {
       <Route path="/delivery/edit" component={DeliveryForm} isPrivate />
 
       <Route path="/deliverymen" component={DeliverymenList} isPrivate />
-      <Route path="/deliveryman/register" component={DeliverymanForm} />
+      <Route
+        path="/deliveryman/register"
+        component={DeliverymanForm}
+        isPrivate
+      />
       <Route path="/deliveryman/edit" component={DeliverymanForm} isPrivate />
 
       <Route path="/recipients" component={RecipientsList} isPrivate />
