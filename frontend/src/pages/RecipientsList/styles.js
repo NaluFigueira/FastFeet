@@ -41,10 +41,17 @@ export const SearchBar = styled.div`
 
 export const RecipientsTable = styled.table`
   width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 1em;
+
+  tbody tr {
+    background: white;
+  }
 
   th {
     text-align: left;
     color: #444;
+    padding: 10px;
 
     &:last-child {
       text-align: center;
@@ -53,6 +60,7 @@ export const RecipientsTable = styled.table`
 
   td {
     color: #666;
+    padding: 10px;
 
     &:last-child {
       text-align: center;

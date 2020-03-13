@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { lighten } from 'polished';
 
 export const Container = styled.div`
   width: 100%;
@@ -39,7 +40,7 @@ export const SearchBar = styled.div`
   }
 `;
 
-export const DeliveriesTable = styled.table`
+export const DeliverymenTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 1em;
@@ -60,9 +61,15 @@ export const DeliveriesTable = styled.table`
 
   td {
     color: #666;
+    width: 30%;
     padding: 10px;
 
+    &:first-child {
+      width: 10%;
+    }
+
     &:last-child {
+      width: 10%;
       text-align: center;
       cursor: pointer;
 
@@ -79,29 +86,16 @@ export const DeliverymanTableData = styled.td`
 
   div {
     color: ${props => props.color};
+    background: ${props => lighten(0.33, props.color)};
     padding: 5px;
-    width: min-content;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    margin-right: 5px;
   }
-`;
 
-export const StatusTableData = styled.td`
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  border-radius: 10px;
-  width: min-content;
-  padding: 2px 8px;
-  color: ${props => props.color} !important;
-
-  background-color: ${props => props.backgroundColor};
-
-  div {
-    width: 10px;
-    height: 10px;
+  img {
     border-radius: 50%;
-    margin: 0 5px 0 0;
-    background-color: ${props => props.color};
+    width: 30px;
+    height: 30px;
   }
 `;
