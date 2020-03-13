@@ -23,8 +23,8 @@ class RecipientController {
       where: {
         name: { [Op.iLike]: name ? `${name}%` : `%%` },
       },
-      limit: 10,
-      offset: ((page || 1) - 1) * 10,
+      limit: 5,
+      offset: ((page || 1) - 1) * 5,
       attributes: [
         "id",
         "name",
@@ -42,7 +42,7 @@ class RecipientController {
         name: { [Op.iLike]: name ? `${name}%` : `%%` },
       },
     });
-    const maxPage = Math.ceil(numberOfRecipients / 10);
+    const maxPage = Math.ceil(numberOfRecipients / 5);
 
     return res.json({ recipients, maxPage });
   }

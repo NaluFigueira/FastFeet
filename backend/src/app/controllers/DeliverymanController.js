@@ -7,10 +7,11 @@ import File from "../models/File";
 
 class DeliverymanController {
   async index(req, res) {
-    const { name } = req.query;
+    const { name, page } = req.query;
 
     const querySchema = Yup.object().shape({
       name: Yup.string(),
+      page: Yup.number(),
     });
 
     if (!(await querySchema.isValid(req.body))) {
@@ -23,6 +24,8 @@ class DeliverymanController {
       where: {
         name: { [Op.iLike]: name ? `${name}%` : `%%` },
       },
+      limit: 5,
+      offset: ((page || 1) - 1) * 5,
       attributes: ["id", "name", "email"],
       include: [
         {
@@ -33,7 +36,14 @@ class DeliverymanController {
       ],
     });
 
-    return res.json(deliverymen);
+    const numberOfDeliverymen = await Deliveryman.count({
+      where: {
+        name: { [Op.iLike]: name ? `${name}%` : `%%` },
+      },
+    });
+    const maxPage = Math.ceil(numberOfDeliverymen / 5);
+
+    return res.json({ deliverymen, maxPage });
   }
 
   async store(req, res) {

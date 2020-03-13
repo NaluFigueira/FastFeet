@@ -26,8 +26,8 @@ class DeliverymanController {
       where: {
         product: { [Op.iLike]: product ? `${product}%` : `%%` },
       },
-      limit: 10,
-      offset: ((page || 1) - 1) * 10,
+      limit: 5,
+      offset: ((page || 1) - 1) * 5,
       attributes: ["id", "product", "canceled_at", "start_date", "end_date"],
       include: [
         {
@@ -62,7 +62,7 @@ class DeliverymanController {
         product: { [Op.iLike]: product ? `${product}%` : `%%` },
       },
     });
-    const maxPage = Math.ceil(numberOfOrders / 10);
+    const maxPage = Math.ceil(numberOfOrders / 5);
 
     return res.json({ orders, maxPage });
   }
