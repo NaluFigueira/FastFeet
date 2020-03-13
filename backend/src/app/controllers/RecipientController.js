@@ -14,9 +14,9 @@ class RecipientController {
     });
 
     if (!(await querySchema.isValid(req.body))) {
-      return res
-        .status(400)
-        .json({ error: "Recipient name must be a string!" });
+      return res.status(400).json({
+        error: "Recipient name must be a string and page must be a number!",
+      });
     }
 
     const recipients = await Recipient.findAll({

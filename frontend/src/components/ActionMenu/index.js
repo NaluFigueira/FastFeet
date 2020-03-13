@@ -23,17 +23,19 @@ export default function ActionMenu({
           <span>Visualizar</span>
         </MenuItem>
       )}
-      <MenuItem iconColor="#4D85EE">
-        <MdEdit size={15} />
-        <Link
-          to={{
-            pathname: `${route}/edit`,
-            state: { object, edit: true },
-          }}
-        >
-          Editar
-        </Link>
-      </MenuItem>
+      {object && (
+        <MenuItem iconColor="#4D85EE">
+          <MdEdit size={15} />
+          <Link
+            to={{
+              pathname: `${route}/edit`,
+              state: { object, edit: true },
+            }}
+          >
+            Editar
+          </Link>
+        </MenuItem>
+      )}
       <MenuItem iconColor="#DE3B3B" onClick={onRemoveClick}>
         <MdDelete size={15} />
         <span>Excluir</span>
@@ -44,11 +46,13 @@ export default function ActionMenu({
 
 ActionMenu.defaultProps = {
   onVisualizeClick: null,
+  object: null,
+  route: '',
 };
 
 ActionMenu.propTypes = {
   onRemoveClick: PropTypes.func.isRequired,
-  route: PropTypes.string.isRequired,
-  object: PropTypes.object.isRequired,
+  route: PropTypes.string,
+  object: PropTypes.object,
   onVisualizeClick: PropTypes.func,
 };

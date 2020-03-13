@@ -19,7 +19,9 @@ class DeliverymanController {
     });
 
     if (!(await querySchema.isValid(req.body))) {
-      return res.status(400).json({ error: "Product name must be a string!" });
+      return res.status(400).json({
+        error: "Product name must be a string and page must be a number!",
+      });
     }
 
     const orders = await Order.findAll({

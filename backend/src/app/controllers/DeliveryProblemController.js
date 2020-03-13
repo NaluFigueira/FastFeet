@@ -9,8 +9,18 @@ import Deliveryman from "../models/Deliveryman";
 
 class DeliveryProblemController {
   async index(req, res) {
+    const { page } = req.query;
+    const querySchema = Yup.object().shape({
+      page: Yup.number(),
+    });
+
+    if (!(await querySchema.isValid(req.body))) {
+      return res.status(400).json({ error: "Page must be a number!" });
+    }
     const deliveryProblems = await DeliveryProblem.findAll({
-      attributes: ["delivery_id", "description"],
+      attributes: ["id", "delivery_id", "description"],
+      limit: 5,
+      offset: ((page || 1) - 1) * 5,
       include: [
         {
           model: Order,
@@ -21,7 +31,9 @@ class DeliveryProblemController {
       ],
     });
 
-    return res.json(deliveryProblems);
+    const maxPage = Math.ceil(deliveryProblems.length / 5);
+
+    return res.json({ deliveryProblems, maxPage });
   }
 
   async show(req, res) {
