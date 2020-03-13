@@ -49,7 +49,7 @@ export default function DeliveryForm() {
     try {
       const response = await api.get('deliveryman');
       setDeliverymen(
-        response.data.map(d => {
+        response.data.deliverymen.map(d => {
           return { value: d.id, label: d.name };
         })
       );
@@ -72,7 +72,7 @@ export default function DeliveryForm() {
     }
     loadRecipients();
     loadDeliverymen();
-  }, []);
+  }, [edit, delivery]);
 
   const loadOptions = (inputValue, route) => {
     return api

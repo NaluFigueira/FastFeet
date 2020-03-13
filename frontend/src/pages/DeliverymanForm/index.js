@@ -40,7 +40,7 @@ export default function DeliverymanForm() {
     if (edit) {
       setData(deliveryman);
     }
-  }, []);
+  }, [deliveryman, edit]);
 
   async function handleSubmit({ name, email, avatar_id }) {
     try {

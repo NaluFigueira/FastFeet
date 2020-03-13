@@ -106,7 +106,35 @@ export default function DeliveriesList() {
   }
 
   useEffect(() => {
-    loadDeliveries();
+    async function loadInitialDeliveries() {
+      try {
+        const response = await api.get('orders');
+        setData(
+          response.data.orders.map(delivery => {
+            const color = genrateRandomColor();
+            const initials = getDeliverymanNameInitials(
+              delivery.deliveryman.name
+            );
+            const status = getDeliveryStatus(
+              delivery.start_date,
+              delivery.end_date,
+              delivery.canceled_at
+            );
+            return {
+              ...delivery,
+              color,
+              initials,
+              status,
+            };
+          })
+        );
+        setMaxPage(response.data.maxPage);
+      } catch (error) {
+        toast.error('Falha ao carregar encomendas!');
+      }
+    }
+
+    loadInitialDeliveries();
   }, []);
 
   async function handleChangePage(pageNumber) {

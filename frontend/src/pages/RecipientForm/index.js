@@ -47,7 +47,7 @@ export default function RecipientForm() {
     if (edit) {
       setData(recipient);
     }
-  }, []);
+  }, [edit, recipient]);
 
   async function handleSubmit({
     name,

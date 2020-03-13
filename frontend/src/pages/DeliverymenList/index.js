@@ -70,7 +70,27 @@ export default function DeliverymenList() {
   }
 
   useEffect(() => {
-    loadDeliverymen();
+    async function loadInitialDeliverymen() {
+      try {
+        const response = await api.get('deliveryman');
+        setData(
+          response.data.deliverymen.map(deliveryman => {
+            const color = genrateRandomColor();
+            const initials = getDeliverymanNameInitials(deliveryman.name);
+            return {
+              ...deliveryman,
+              color,
+              initials,
+            };
+          })
+        );
+        setMaxPage(response.data.maxPage);
+      } catch (error) {
+        toast.error('Falha ao carregar entregadores(as)!');
+      }
+    }
+
+    loadInitialDeliverymen();
   }, []);
 
   async function handleChangePage(pageNumber) {
