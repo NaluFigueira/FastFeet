@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { MdAdd, MdMoreHoriz, MdSearch } from 'react-icons/md';
+import { MdMoreHoriz } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
-import colors from '~/styles/colors';
-import Button from '~/components/Button';
+import ListHeader from '~/components/ListHeader';
 import ActionMenu from '~/components/ActionMenu';
 import Pagination from '~/components/Pagination';
 
 import api from '~/services/api';
-import history from '~/services/history';
 
-import { Container, Content, SearchBar, RecipientsTable } from './styles';
+import { Container, Content, RecipientsTable } from './styles';
 
 export default function RecipientsList() {
   const [selectedRecipient, setSelectedRecipient] = useState(-1);
@@ -64,24 +62,12 @@ export default function RecipientsList() {
   return (
     <Container>
       <Content>
-        <h2>Gerenciando destinatários</h2>
-        <div>
-          <SearchBar>
-            <MdSearch size={18} color={colors.body} />
-            <input
-              type="text"
-              onChange={handleInputSearch}
-              placeholder="Buscar por destinatários"
-            />
-          </SearchBar>
-          <Button
-            type="button"
-            onClick={() => history.push('/recipient/register')}
-          >
-            <MdAdd size={24} style={{ marginRight: 10 }} />
-            Cadastrar
-          </Button>
-        </div>
+        <ListHeader
+          title="Gerenciando Entregadores"
+          registerRoute="/deliveryman/register"
+          searchInputPlaceholder="Buscar por entregadores"
+          searchFunction={handleInputSearch}
+        />
         <div>
           {data.length === 0 ? (
             <span>Não foram encontrados destinatários</span>

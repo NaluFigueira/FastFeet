@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { MdAdd, MdMoreHoriz, MdSearch } from 'react-icons/md';
+import { MdMoreHoriz } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { lighten } from 'polished';
 
+import { format } from 'date-fns';
+
 import colors from '~/styles/colors';
-import Button from '~/components/Button';
+import ListHeader from '~/components/ListHeader';
 import ActionMenu from '~/components/ActionMenu';
 import DeliveryDetailsDialog from '~/components/DeliveryDetailsDialog';
 import Pagination from '~/components/Pagination';
 
 import api from '~/services/api';
-import history from '~/services/history';
 
 import {
   Container,
   Content,
-  SearchBar,
   DeliveriesTable,
   DeliverymanTableData,
   StatusTableData,
@@ -78,8 +78,15 @@ export default function DeliveriesList() {
           delivery.end_date,
           delivery.canceled_at
         );
+
         return {
           ...delivery,
+          start_date: delivery.start_date
+            ? format(new Date(delivery.start_date), 'dd/MM/yyyy')
+            : null,
+          end_date: delivery.end_date
+            ? format(new Date(delivery.end_date), 'dd/MM/yyyy')
+            : null,
           color,
           initials,
           status,
@@ -122,6 +129,12 @@ export default function DeliveriesList() {
             );
             return {
               ...delivery,
+              start_date: delivery.start_date
+                ? format(new Date(delivery.start_date), 'dd/MM/yyyy')
+                : null,
+              end_date: delivery.end_date
+                ? format(new Date(delivery.end_date), 'dd/MM/yyyy')
+                : null,
               color,
               initials,
               status,
@@ -172,24 +185,12 @@ export default function DeliveriesList() {
       )}
       <Container>
         <Content>
-          <h2>Gerenciando encomendas</h2>
-          <div>
-            <SearchBar>
-              <MdSearch size={18} color={colors.body} />
-              <input
-                type="text"
-                onChange={handleInputSearch}
-                placeholder="Buscar por encomendas"
-              />
-            </SearchBar>
-            <Button
-              type="button"
-              onClick={() => history.push('/delivery/register')}
-            >
-              <MdAdd size={24} style={{ marginRight: 10 }} />
-              Cadastrar
-            </Button>
-          </div>
+          <ListHeader
+            title="Gerenciando Encomendas"
+            registerRoute="/delivery/register"
+            searchInputPlaceholder="Buscar por encomendas"
+            searchFunction={handleInputSearch}
+          />
           <div>
             {data.length === 0 ? (
               <span>Não foram encontradas encomendas</span>

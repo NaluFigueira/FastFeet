@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 
-import { MdRemoveRedEye, MdEdit, MdDelete } from 'react-icons/md';
+import { MdRemoveRedEye, MdEdit, MdDelete, MdCancel } from 'react-icons/md';
 
 import PropTypes from 'prop-types';
 
@@ -11,6 +11,7 @@ import { Menu, MenuItem } from './styles';
 
 export default function ActionMenu({
   onRemoveClick,
+  onCancelClick,
   route,
   object,
   onVisualizeClick,
@@ -36,23 +37,34 @@ export default function ActionMenu({
           </Link>
         </MenuItem>
       )}
-      <MenuItem iconColor="#DE3B3B" onClick={onRemoveClick}>
-        <MdDelete size={15} />
-        <span>Excluir</span>
-      </MenuItem>
+      {onRemoveClick && (
+        <MenuItem iconColor="#DE3B3B" onClick={onRemoveClick}>
+          <MdDelete size={15} />
+          <span>Excluir</span>
+        </MenuItem>
+      )}
+      {onCancelClick && (
+        <MenuItem iconColor="#DE3B3B" onClick={onCancelClick}>
+          <MdCancel size={15} />
+          <span>Cancelar</span>
+        </MenuItem>
+      )}
     </Menu>
   );
 }
 
 ActionMenu.defaultProps = {
   onVisualizeClick: null,
+  onCancelClick: null,
+  onRemoveClick: null,
   object: null,
   route: '',
 };
 
 ActionMenu.propTypes = {
-  onRemoveClick: PropTypes.func.isRequired,
+  onRemoveClick: PropTypes.func,
   route: PropTypes.string,
   object: PropTypes.object,
   onVisualizeClick: PropTypes.func,
+  onCancelClick: PropTypes.func,
 };

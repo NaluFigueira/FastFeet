@@ -54,7 +54,7 @@ export default function DeliveryProblems() {
   async function handleCancelDelivery() {
     try {
       await api.put(
-        `problems/${data[selectedDeliveryProblem].id}/cancel-delivery`
+        `problem/${data[selectedDeliveryProblem].id}/cancel-delivery`
       );
       setSelectedDeliveryProblem(-1);
       loadDeliveryProblems();
@@ -111,7 +111,7 @@ export default function DeliveryProblems() {
                         />
                         {selectedDeliveryProblem === index && (
                           <ActionMenu
-                            onRemoveClick={handleCancelDelivery}
+                            onCancelClick={handleCancelDelivery}
                             onVisualizeClick={() => setOpenDialog(true)}
                           />
                         )}

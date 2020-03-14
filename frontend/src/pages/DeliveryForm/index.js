@@ -72,13 +72,16 @@ export default function DeliveryForm() {
     }
     loadRecipients();
     loadDeliverymen();
-  }, [edit, delivery]);
+  }, []);
 
   const loadOptions = (inputValue, route) => {
     return api
       .get(route, { params: { name: inputValue } })
       .then(response => {
-        const options = response.data.map(object => ({
+        let results = [];
+        if (route === 'recipients') results = response.data.recipients;
+        else results = response.data.deliverymen;
+        const options = results.map(object => ({
           value: object.id,
           label: object.name,
         }));
