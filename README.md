@@ -1,6 +1,6 @@
-<h4 align="center">
+<h2 align="center">
   Fastfeet - Final Challenge of GoStack 10.0
-</h4>
+</h2>
 <p align="center">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/NaluFigueira/FastFeet.svg">
 
