@@ -1,6 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import SignIn from '~/pages/SignIn';
 import Dashboard from '~/pages/Dashboard';
 import Profile from '~/pages/Profile';
@@ -10,13 +13,10 @@ import DeliveryProblems from '~/pages/DeliveryProblems';
 import ConfirmDelivery from '~/pages/ConfirmDelivery';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-export default function createRouter(isSigned = false) {
-  return !isSigned ? (
-    <Stack.Navigator headerMode="none">
-      <Stack.Screen name="SignIn" component={SignIn} />
-    </Stack.Navigator>
-  ) : (
+function DeliveryStack() {
+  return (
     <Stack.Navigator
       initialRouteName="Dashboard"
       screenOptions={{
@@ -30,11 +30,6 @@ export default function createRouter(isSigned = false) {
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -58,5 +53,45 @@ export default function createRouter(isSigned = false) {
         options={{ title: 'Confirmar entrega' }}
       />
     </Stack.Navigator>
+  );
+}
+
+export default function createRouter(isSigned = false) {
+  return !isSigned ? (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="SignIn" component={SignIn} />
+    </Stack.Navigator>
+  ) : (
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: '#7D40E7',
+        inactiveTintColor: '#999',
+        style: {
+          backgroundColor: 'white',
+        },
+        keyboardHidesTabBar: true,
+      }}
+    >
+      <Tab.Screen
+        name="Dashboard"
+        component={DeliveryStack}
+        options={{
+          tabBarLabel: 'Entregas',
+          tabBarIcon: ({ color }) => (
+            <MaterialIcon name="menu" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarLabel: 'Meu Perfil',
+          tabBarIcon: ({ color }) => (
+            <IoniconsIcon name="md-contact" size={20} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
