@@ -46,6 +46,24 @@ class DeliverymanController {
     return res.json({ deliverymen, maxPage });
   }
 
+  async show(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res.status(400).json({
+        error: "Deliveryman id is required!",
+      });
+    }
+
+    const { id } = req.params;
+
+    const deliveryman = await Deliveryman.findByPk(id);
+
+    return res.json(deliveryman);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),

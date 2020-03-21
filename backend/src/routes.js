@@ -31,6 +31,8 @@ routes.get(
   DeliverymanDeliveriresController.index
 );
 
+routes.get("/deliveryman/:id", DeliverymanController.show);
+
 routes.post(
   "/delivery_start",
   getCurrentDateMiddleware,
