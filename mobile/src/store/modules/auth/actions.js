@@ -5,15 +5,21 @@ export function signInRequest(id) {
   };
 }
 
-export function signInSuccess(id) {
+export function signInSuccess(user) {
   return {
     type: '@auth/SIGN_IN_SUCCESS',
-    payload: { id },
+    payload: { user },
   };
 }
 
 export function signInFailure() {
   return {
     type: '@auth/SIGN_IN_FAILURE',
+  };
+}
+
+export function signOut() {
+  return {
+    type: '@auth/SIGN_OUT',
   };
 }

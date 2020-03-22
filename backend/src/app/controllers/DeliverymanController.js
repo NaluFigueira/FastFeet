@@ -59,7 +59,16 @@ class DeliverymanController {
 
     const { id } = req.params;
 
-    const deliveryman = await Deliveryman.findByPk(id);
+    const deliveryman = await Deliveryman.findOne({
+      where: { id },
+      include: [
+        {
+          model: File,
+          as: "avatar",
+          attributes: ["path", "url"],
+        },
+      ],
+    });
 
     return res.json(deliveryman);
   }

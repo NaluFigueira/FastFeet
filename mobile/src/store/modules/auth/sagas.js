@@ -9,8 +9,8 @@ export function* signIn({ payload }) {
   try {
     const { id } = payload;
 
-    yield call(api.get, `deliveryman/${id}`);
-    yield put(signInSuccess(id));
+    const response = yield call(api.get, `deliveryman/${id}`);
+    yield put(signInSuccess(response.data));
   } catch (error) {
     console.tron.log(error);
     Alert.alert('Erro de autenticação', 'Esse ID é inválido!');

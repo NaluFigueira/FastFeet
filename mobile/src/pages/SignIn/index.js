@@ -31,7 +31,11 @@ export default function SignIn() {
           value={id}
           onChangeText={setId}
         />
-        <SubmitButton loading={loading} onPress={handleSubmit}>
+        <SubmitButton
+          backgroundColor="#82bf18"
+          loading={loading}
+          onPress={handleSubmit}
+        >
           Entrar no sistema
         </SubmitButton>
       </Form>
