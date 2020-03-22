@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from 'react-native';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -27,6 +28,21 @@ export default function DeliveryDetails({ navigation, route }) {
     if (delivery.end_date) return 'Entregue';
     if (delivery.start_date) return 'Retirada';
     return 'Pendente';
+  }
+
+  function handleReportProblem() {
+    if (delivery.end_date)
+      Alert.alert(
+        'Ação inválida',
+        'Não é possível reportar problemas em encomendas que já foram entregues!'
+      );
+    else navigation.navigate('ReportProblem', { id: delivery.id });
+  }
+
+  function handleConfirmDelivery() {
+    if (delivery.end_date)
+      Alert.alert('Ação inválida', 'Essa encomenda já foi entregue!');
+    else navigation.navigate('ConfirmDelivery');
   }
 
   return (
@@ -91,7 +107,7 @@ export default function DeliveryDetails({ navigation, route }) {
         </DateContainer>
       </SituaitionCard>
       <ActionsContainer>
-        <ActionButton>
+        <ActionButton onPress={handleReportProblem}>
           <IoniconsIcon
             name="ios-close-circle-outline"
             size={24}
@@ -99,7 +115,7 @@ export default function DeliveryDetails({ navigation, route }) {
           />
           <ActionButtonText>Informar Problema</ActionButtonText>
         </ActionButton>
-        <ActionButton>
+        <ActionButton onPress={() => navigation.navigate('DeliveryProblems')}>
           <MaterialIcon
             name="info-outline"
             size={24}
@@ -107,7 +123,7 @@ export default function DeliveryDetails({ navigation, route }) {
           />
           <ActionButtonText>Visualizar Problemas</ActionButtonText>
         </ActionButton>
-        <ActionButton borderOff>
+        <ActionButton borderOff onPress={handleConfirmDelivery}>
           <IoniconsIcon
             name="ios-checkmark-circle-outline"
             size={24}
