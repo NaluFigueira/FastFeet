@@ -109,7 +109,11 @@ export default function Dashboard({ navigation }) {
               createdAt={item.createdAt}
               start_date={item.start_date}
               end_date={item.end_date}
-              onSeeDetailsClick={() => navigation.navigate('DeliveryDetails')}
+              onSeeDetailsClick={() =>
+                navigation.navigate('DeliveryDetails', {
+                  delivery: item,
+                })
+              }
             />
           )}
         />

@@ -1,4 +1,6 @@
 import React from 'react';
+import { format } from 'date-fns';
+import PropTypes from 'prop-types';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
@@ -18,7 +20,15 @@ import {
   ActionButtonText,
 } from './styles';
 
-export default function DeliveryDetails() {
+export default function DeliveryDetails({ navigation, route }) {
+  const { delivery } = route.params;
+
+  function getDeliveryStatus() {
+    if (delivery.end_date) return 'Entregue';
+    if (delivery.start_date) return 'Retirada';
+    return 'Pendente';
+  }
+
   return (
     <Container>
       <Background />
@@ -33,15 +43,19 @@ export default function DeliveryDetails() {
         </DeliveryIdContainer>
         <DeliveryInfoContainer>
           <InfoLabel>Destinatário</InfoLabel>
-          <InfoText>Ludwig van Beethoven</InfoText>
+          <InfoText>{delivery.recipient.name}</InfoText>
         </DeliveryInfoContainer>
         <DeliveryInfoContainer>
           <InfoLabel>Endereço de entrega</InfoLabel>
-          <InfoText>Rua Beethoven, 1729, Diadema - SP, 09960-580</InfoText>
+          <InfoText>
+            {delivery.recipient.street}, {delivery.recipient.number},{' '}
+            {delivery.recipient.city} - {delivery.recipient.state},{' '}
+            {delivery.recipient.zip_code}
+          </InfoText>
         </DeliveryInfoContainer>
         <DeliveryInfoContainer>
           <InfoLabel>Produto</InfoLabel>
-          <InfoText>Yamaha SX7</InfoText>
+          <InfoText>{delivery.product}</InfoText>
         </DeliveryInfoContainer>
       </DetailsCard>
       <SituaitionCard>
@@ -55,16 +69,24 @@ export default function DeliveryDetails() {
         </DeliveryIdContainer>
         <DeliveryInfoContainer>
           <InfoLabel>Status</InfoLabel>
-          <InfoText>Pendente</InfoText>
+          <InfoText>{getDeliveryStatus()}</InfoText>
         </DeliveryInfoContainer>
         <DateContainer>
           <DeliveryInfoContainer>
             <InfoLabel>Data de retirada</InfoLabel>
-            <InfoText>14/01/2020</InfoText>
+            <InfoText>
+              {delivery.start_date
+                ? format(new Date(delivery.start_date), 'dd/MM/yyyy')
+                : '- - / - - / - -'}
+            </InfoText>
           </DeliveryInfoContainer>
           <DeliveryInfoContainer>
             <InfoLabel>Data de entrega</InfoLabel>
-            <InfoText>- - / - - / - -</InfoText>
+            <InfoText>
+              {delivery.end_date
+                ? format(new Date(delivery.end_date), 'dd/MM/yyyy')
+                : '- - / - - / - -'}
+            </InfoText>
           </DeliveryInfoContainer>
         </DateContainer>
       </SituaitionCard>
@@ -97,3 +119,29 @@ export default function DeliveryDetails() {
     </Container>
   );
 }
+
+DeliveryDetails.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      delivery: PropTypes.shape({
+        id: PropTypes.number,
+        product: PropTypes.string,
+        start_date: PropTypes.string,
+        end_date: PropTypes.string,
+        createdAt: PropTypes.string,
+        recipient: PropTypes.shape({
+          name: PropTypes.string,
+          street: PropTypes.string,
+          number: PropTypes.string,
+          additional_address: PropTypes.string,
+          state: PropTypes.string,
+          city: PropTypes.string,
+          zip_code: PropTypes.string,
+        }),
+      }),
+    }),
+  }).isRequired,
+};

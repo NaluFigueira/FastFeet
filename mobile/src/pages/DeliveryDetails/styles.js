@@ -13,7 +13,7 @@ export const Background = styled.View`
 export const DetailsCard = styled.View`
   position: absolute;
   width: 90%;
-  margin-top: 20px;
+  margin-top: 10px;
   border: 2px solid #f8f9fd;
   border-radius: 4px;
   background-color: white;
@@ -23,7 +23,7 @@ export const DetailsCard = styled.View`
 
 export const SituaitionCard = styled.View`
   width: 90%;
-  margin-top: 31%;
+  margin-top: 33%;
   border: 2px solid #f8f9fd;
   border-radius: 4px;
   background-color: white;
