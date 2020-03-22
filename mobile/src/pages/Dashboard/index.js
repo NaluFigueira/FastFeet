@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Alert, ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import noImage from '~/assets/noImage.png';
 
+import noImage from '~/assets/noImage.png';
 import { signOut } from '~/store/modules/auth/actions';
+
 import api from '~/services/api';
 
 import DeliveryCard from '~/components/DeliveryCard';
@@ -23,7 +25,7 @@ import {
   LoadingContainer,
 } from './styles';
 
-export default function Dashboard() {
+export default function Dashboard({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [delivered, setDelivered] = useState(false);
   const [deliveries, setDeliveries] = useState([]);
@@ -107,6 +109,7 @@ export default function Dashboard() {
               createdAt={item.createdAt}
               start_date={item.start_date}
               end_date={item.end_date}
+              onSeeDetailsClick={() => navigation.navigate('DeliveryDetails')}
             />
           )}
         />
@@ -114,3 +117,9 @@ export default function Dashboard() {
     </Container>
   );
 }
+
+Dashboard.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+};

@@ -22,6 +22,7 @@ function DeliveryStack() {
       screenOptions={{
         headerStyle: {
           backgroundColor: '#7D40E7',
+          elevation: 0,
         },
         headerTitleAlign: 'center',
         headerTintColor: '#FFF',

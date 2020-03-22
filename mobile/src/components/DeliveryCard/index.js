@@ -24,6 +24,7 @@ export default function DeliveryCard({
   end_date,
   createdAt,
   city,
+  onSeeDetailsClick,
 }) {
   return (
     <Container>
@@ -55,7 +56,7 @@ export default function DeliveryCard({
           <InfoText>{city}</InfoText>
         </DeliveryInfo>
         <DeliveryInfo>
-          <DeliveryId>Ver detalhes</DeliveryId>
+          <DeliveryId onPress={onSeeDetailsClick}>Ver detalhes</DeliveryId>
         </DeliveryInfo>
       </DeliveryInfoContainer>
     </Container>
@@ -70,7 +71,8 @@ DeliveryCard.defaultProps = {
 DeliveryCard.propTypes = {
   id: PropTypes.number.isRequired,
   createdAt: PropTypes.string.isRequired,
+  city: PropTypes.string.isRequired,
+  onSeeDetailsClick: PropTypes.func.isRequired,
   start_date: PropTypes.string,
   end_date: PropTypes.string,
-  city: PropTypes.string.isRequired,
 };
