@@ -115,7 +115,11 @@ export default function DeliveryDetails({ navigation, route }) {
           />
           <ActionButtonText>Informar Problema</ActionButtonText>
         </ActionButton>
-        <ActionButton onPress={() => navigation.navigate('DeliveryProblems')}>
+        <ActionButton
+          onPress={() =>
+            navigation.navigate('DeliveryProblems', { id: delivery.id })
+          }
+        >
           <MaterialIcon
             name="info-outline"
             size={24}
