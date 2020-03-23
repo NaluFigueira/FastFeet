@@ -47,7 +47,7 @@ class DeliveryProblemController {
 
     const deliveryProblems = await DeliveryProblem.findAll({
       where: { delivery_id: req.params.id },
-      attributes: ["delivery_id", "description", "created_at"],
+      attributes: ["id", "delivery_id", "description", "created_at"],
     });
 
     if (!deliveryProblems) {

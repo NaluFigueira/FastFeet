@@ -42,7 +42,9 @@ export default function DeliveryDetails({ navigation, route }) {
   function handleConfirmDelivery() {
     if (delivery.end_date)
       Alert.alert('Ação inválida', 'Essa encomenda já foi entregue!');
-    else navigation.navigate('ConfirmDelivery');
+    if (!delivery.start_date)
+      Alert.alert('Ação inválida', 'Essa encomenda não foi retirada!');
+    else navigation.navigate('ConfirmDelivery', { id: delivery.id });
   }
 
   return (

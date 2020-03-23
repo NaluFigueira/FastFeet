@@ -45,6 +45,8 @@ routes.put(
 );
 
 routes.post("/problem", DeliveryProblemController.store);
+routes.get("/delivery/:id/problems", DeliveryProblemController.show);
+routes.post("/files", upload.single("file"), FileController.store);
 
 routes.use(authMiddleware);
 
@@ -52,8 +54,6 @@ routes.get("/recipients", RecipientController.index);
 routes.post("/recipients", RecipientController.store);
 routes.put("/recipients", RecipientController.update);
 routes.delete("/recipients/:id", RecipientController.delete);
-
-routes.post("/files", upload.single("file"), FileController.store);
 
 routes.get("/deliveryman", DeliverymanController.index);
 routes.post(
@@ -82,7 +82,7 @@ routes.put(
 routes.delete("/orders/:id", OrderController.delete);
 
 routes.get("/problems", DeliveryProblemController.index);
-routes.get("/delivery/:id/problems", DeliveryProblemController.show);
+
 routes.put(
   "/problem/:id/cancel-delivery",
   getCurrentDateMiddleware,
