@@ -4,7 +4,6 @@ import { darken } from 'polished';
 export const PagesContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 10px;
 
   svg {
     color: #7d40e7;

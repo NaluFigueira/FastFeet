@@ -5,7 +5,7 @@ export const Container = styled.div`
 `;
 
 export const Content = styled.div`
-  margin: 20px auto;
+  margin: 10px auto;
   max-width: 850px;
   display: flex;
   flex-direction: column;
@@ -52,19 +52,6 @@ export const DeliveriesTable = styled.table`
         color: #c6c6c6;
       }
     }
-  }
-`;
-
-export const DeliverymanTableData = styled.td`
-  display: flex;
-  align-items: center;
-
-  div {
-    color: ${props => props.color};
-    padding: 5px;
-    width: min-content;
-    border-radius: 50%;
-    margin-right: 5px;
   }
 `;
 

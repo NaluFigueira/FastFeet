@@ -13,13 +13,7 @@ import Pagination from '~/components/Pagination';
 
 import api from '~/services/api';
 
-import {
-  Container,
-  Content,
-  DeliveriesTable,
-  DeliverymanTableData,
-  StatusTableData,
-} from './styles';
+import { Container, Content, DeliveriesTable, StatusTableData } from './styles';
 
 export default function DeliveriesList() {
   const [openDialog, setOpenDialog] = useState(false);
@@ -27,20 +21,6 @@ export default function DeliveriesList() {
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(-1);
   const [data, setData] = useState([]);
-
-  const genrateRandomColor = () => {
-    return `#${`00000${(Math.random() * (1 <= 24) || 0).toString(16)}`.slice(
-      -6
-    )}`;
-  };
-
-  const getDeliverymanNameInitials = deliverymanName => {
-    const fullName = deliverymanName.split(' ');
-    let initials = fullName[0].charAt(0);
-    if (fullName.length > 0)
-      initials += fullName[fullName.length - 1].charAt(0);
-    return initials;
-  };
 
   const getDeliveryStatus = (start_date, end_date, canceled_at) => {
     if (canceled_at) return 'CANCELADA';
@@ -71,8 +51,6 @@ export default function DeliveriesList() {
   const setDeliveries = deliveries => {
     setData(
       deliveries.map(delivery => {
-        const color = genrateRandomColor();
-        const initials = getDeliverymanNameInitials(delivery.deliveryman.name);
         const status = getDeliveryStatus(
           delivery.start_date,
           delivery.end_date,
@@ -87,8 +65,6 @@ export default function DeliveriesList() {
           end_date: delivery.end_date
             ? format(new Date(delivery.end_date), 'dd/MM/yyyy')
             : null,
-          color,
-          initials,
           status,
         };
       })
@@ -118,10 +94,6 @@ export default function DeliveriesList() {
         const response = await api.get('orders');
         setData(
           response.data.orders.map(delivery => {
-            const color = genrateRandomColor();
-            const initials = getDeliverymanNameInitials(
-              delivery.deliveryman.name
-            );
             const status = getDeliveryStatus(
               delivery.start_date,
               delivery.end_date,
@@ -135,8 +107,6 @@ export default function DeliveriesList() {
               end_date: delivery.end_date
                 ? format(new Date(delivery.end_date), 'dd/MM/yyyy')
                 : null,
-              color,
-              initials,
               status,
             };
           })
@@ -212,10 +182,7 @@ export default function DeliveriesList() {
                     <tr key={delivery.id}>
                       <td>#{delivery.id}</td>
                       <td>{delivery.recipient.name}</td>
-                      <DeliverymanTableData color={delivery.color}>
-                        <div>{delivery.initials}</div>
-                        {delivery.deliveryman.name}
-                      </DeliverymanTableData>
+                      <td>{delivery.deliveryman.name}</td>
                       <td>{delivery.recipient.city}</td>
                       <td>{delivery.recipient.state}</td>
                       <StatusTableData

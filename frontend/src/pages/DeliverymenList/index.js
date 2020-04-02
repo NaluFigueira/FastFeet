@@ -8,6 +8,8 @@ import Pagination from '~/components/Pagination';
 
 import api from '~/services/api';
 
+import NoImage from '~/assets/noImage.png';
+
 import {
   Container,
   Content,
@@ -21,34 +23,6 @@ export default function DeliverymenList() {
   const [maxPage, setMaxPage] = useState(-1);
   const [data, setData] = useState([]);
 
-  const genrateRandomColor = () => {
-    return `#${`00000${(Math.random() * (1 <= 24) || 0).toString(16)}`.slice(
-      -6
-    )}`;
-  };
-
-  const getDeliverymanNameInitials = deliverymanName => {
-    const fullName = deliverymanName.split(' ');
-    let initials = fullName[0].charAt(0);
-    if (fullName.length > 0)
-      initials += fullName[fullName.length - 1].charAt(0);
-    return initials;
-  };
-
-  const setDeliverymen = deliverymen => {
-    setData(
-      deliverymen.map(deliveryman => {
-        const color = genrateRandomColor();
-        const initials = getDeliverymanNameInitials(deliveryman.name);
-        return {
-          ...deliveryman,
-          color,
-          initials,
-        };
-      })
-    );
-  };
-
   async function loadDeliverymen(name = '', pageNumber = 1) {
     try {
       const response = await api.get('deliveryman', {
@@ -57,7 +31,7 @@ export default function DeliverymenList() {
           page: pageNumber,
         },
       });
-      setDeliverymen(response.data.deliverymen);
+      setData(response.data.deliverymen);
       setMaxPage(response.data.maxPage);
       return true;
     } catch (error) {
@@ -70,17 +44,7 @@ export default function DeliverymenList() {
     async function loadInitialDeliverymen() {
       try {
         const response = await api.get('deliveryman');
-        setData(
-          response.data.deliverymen.map(deliveryman => {
-            const color = genrateRandomColor();
-            const initials = getDeliverymanNameInitials(deliveryman.name);
-            return {
-              ...deliveryman,
-              color,
-              initials,
-            };
-          })
-        );
+        setData(response.data.deliverymen);
         setMaxPage(response.data.maxPage);
       } catch (error) {
         toast.error('Falha ao carregar entregadores(as)!');
@@ -139,14 +103,14 @@ export default function DeliverymenList() {
                 {data.map((deliveryman, index) => (
                   <tr key={deliveryman.id}>
                     <td>#{deliveryman.id}</td>
-                    <DeliverymanTableData color={deliveryman.color}>
+                    <DeliverymanTableData>
                       {deliveryman.avatar ? (
                         <img
                           src={deliveryman.avatar.url}
                           alt={deliveryman.name}
                         />
                       ) : (
-                        <div>{deliveryman.initials}</div>
+                        <img src={NoImage} alt={deliveryman.name} />
                       )}
                     </DeliverymanTableData>
                     <td>{deliveryman.name}</td>
