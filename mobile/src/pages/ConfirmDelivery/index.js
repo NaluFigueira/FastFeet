@@ -29,21 +29,28 @@ export default function ConfirmDelivery({ navigation, route }) {
   }
 
   async function handleSubmit() {
-    try {
-      await api.put('delivery_end', {
-        order_id: id,
-        signature_id: fileId,
-      });
-      navigation.push('Dashboard');
+    if (fileId === -1) {
       Alert.alert(
-        'Entrega confirmada',
-        'A entrega foi confirmada com sucesso!'
+        'Campos obrigatórios não preenchidos',
+        'Por favor, inclua uma foto da assinatura do destinatário!'
       );
-    } catch (error) {
-      Alert.alert(
-        'Erro ao confirmar entrega',
-        'Não foi possível confirmar a entrega!'
-      );
+    } else {
+      try {
+        await api.put('delivery_end', {
+          order_id: id,
+          signature_id: fileId,
+        });
+        navigation.push('Dashboard');
+        Alert.alert(
+          'Entrega confirmada',
+          'A entrega foi confirmada com sucesso!'
+        );
+      } catch (error) {
+        Alert.alert(
+          'Erro ao confirmar entrega',
+          'Não foi possível confirmar a entrega!'
+        );
+      }
     }
   }
 
@@ -52,6 +59,7 @@ export default function ConfirmDelivery({ navigation, route }) {
   return (
     <Container>
       <Background />
+
       <Preview
         source={preview.length === 0 ? previewImage : { uri: preview }}
       />

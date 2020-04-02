@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image } from 'react-native';
+import { Image, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import logo from '~/assets/logo.png';
@@ -14,7 +14,14 @@ export default function SignIn() {
   const loading = useSelector(state => state.auth.loading);
 
   function handleSubmit() {
-    dispatch(signInRequest(id));
+    if (id.length === 0) {
+      Alert.alert(
+        'Campos obrigatórios não preenchidos',
+        'Por favor, preencha o campo de id!'
+      );
+    } else {
+      dispatch(signInRequest(id));
+    }
   }
 
   return (

@@ -11,24 +11,31 @@ export default function ReportProblem({ navigation, route }) {
   const { id } = route.params;
 
   async function handleSend() {
-    setLoading(true);
-    try {
-      await api.post('problem', {
-        description,
-        delivery_id: id,
-      });
-      navigation.goBack();
+    if (description.length === 0) {
       Alert.alert(
-        'Problema reportado com sucesso',
-        'O problema será analisado pela distribuidora'
+        'Campos obrigatórios não preenchidos',
+        'Por favor, preencha o campo de descrição!'
       );
-    } catch (error) {
-      Alert.alert(
-        'Erro ao informar problema',
-        'Não foi possível informar o problema para a distribuidora!'
-      );
+    } else {
+      setLoading(true);
+      try {
+        await api.post('problem', {
+          description,
+          delivery_id: id,
+        });
+        navigation.goBack();
+        Alert.alert(
+          'Problema reportado com sucesso',
+          'O problema será analisado pela distribuidora'
+        );
+      } catch (error) {
+        Alert.alert(
+          'Erro ao informar problema',
+          'Não foi possível informar o problema para a distribuidora!'
+        );
+      }
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (

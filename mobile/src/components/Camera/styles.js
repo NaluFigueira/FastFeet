@@ -13,3 +13,13 @@ export const CameraButton = styled.TouchableOpacity`
   align-self: center;
   padding: 10px;
 `;
+
+export const LoadingSpinner = styled.ActivityIndicator.attrs({
+  size: 'large',
+  color: '#7d40e7',
+})`
+  position: absolute;
+  top: 70%;
+  align-self: center;
+  padding: 10px;
+`;

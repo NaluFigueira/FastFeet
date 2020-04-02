@@ -1,13 +1,14 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import api from '~/services/api';
-import { TCamera, CameraButton } from './styles';
+import { TCamera, CameraButton, LoadingSpinner } from './styles';
 
 export default function Camera({ loadPreview }) {
   const camera = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   async function handleChange(image) {
     const data = new FormData();
@@ -31,6 +32,7 @@ export default function Camera({ loadPreview }) {
 
       const { id, url } = response.data;
 
+      setLoading(false);
       loadPreview(id, url);
     } catch (error) {
       Alert.alert(
@@ -42,6 +44,7 @@ export default function Camera({ loadPreview }) {
 
   async function takePicture() {
     if (camera) {
+      setLoading(true);
       const options = { quality: 0.5, base64: true };
       const data = await camera.current.takePictureAsync(options);
       handleChange(data);
@@ -68,9 +71,13 @@ export default function Camera({ loadPreview }) {
           buttonNegative: 'Cancel',
         }}
       />
-      <CameraButton onPress={takePicture}>
-        <Icon name="photo-camera" size={36} style={{ color: 'white' }} />
-      </CameraButton>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <CameraButton onPress={takePicture}>
+          <Icon name="photo-camera" size={36} style={{ color: 'white' }} />
+        </CameraButton>
+      )}
     </>
   );
 }
