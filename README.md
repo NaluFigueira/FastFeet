@@ -58,9 +58,56 @@ This project was developed at the [RocketSeat GoStack Bootcamp](https://rocketse
 -  [react-select](https://react-select.com/home)
 -  [yup](https://github.com/jquense/yup)
 
-# Outros
+# Mobile (Android Only)
+
+-  [ReactNative](https://reactnative.dev/)
+-  [Redux](https://redux.js.org/)
+-  [Redux-Saga](https://redux-saga.js.org/)
+-  [React Navigation](https://reactnavigation.org/)
+-  [Axios](https://github.com/axios/axios)
+-  [Immer](https://github.com/immerjs/immer)
+-  [Polished](https://polished.js.org/)
+-  [styled-components](https://www.styled-components.com/)
+-  [React-Native-Vector-Icons](https://github.com/oblador/react-native-vector-icons)
+-  [Reactotron](https://infinite.red/reactotron)
+-  [date-fns](https://date-fns.org/)
+-  [prop-types](https://github.com/facebook/prop-types)
+-  [yup](https://github.com/jquense/yup)
+-  [AsyncStorage](https://github.com/react-native-community/async-storage)
+
+# Others
 
 -  [VS Code][vc] with [EditorConfig][vceditconfig], [ESLint][vceslint] and [Prettier][prettier]
+
+# Instructions
+
+First, we need to start the api. For that you'll need to:
+-  Create a database in PostgreSQL and a redis container with docker.
+-  Create a .env file following the format available on .env.example.
+-  Run the following commands on backend folder: 
+```
+yarn
+yarn sequelize db:migrate
+yarn sequelize db:seed:all
+```
+-  After that you can start the api with:
+```
+yarn dev
+```
+- And then, in a seperate command prompt:
+```
+yarn queue
+```
+To start front-end, execute the following commands on frontend folder:
+```
+yarn
+yarn start
+```
+To start mobile (Android only), execute the following commands on frontend folder:
+```
+yarn
+yarn android
+```
 
 Made with ♥ by Ana Figueira :wave: [Get in touch!](https://www.linkedin.com/in/ana-lu%C3%ADsa-chaves-figueira-38792218a/)
 
